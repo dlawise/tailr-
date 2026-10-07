@@ -25,3 +25,11 @@ Printing can be unreliable inside the Home Screen app, so use Safari for this.
 
 ## Updating
 Replace `index.html` in the repo. If the old version sticks, change `V='tailor-v1'` to `tailor-v2` in `sw.js`.
+
+## Features
+- Upload or paste an existing CV to pre-fill your details.
+- Profiles: save different versions of your details (for example "Analyst roles") from the Profile menu on tab 1. Edits update the active profile automatically.
+- Fit check with "Turn a gap into evidence" prompts, then Resume, Full CV, Cover letter and Interview prep.
+- Download Word (.docx) or plain text (.txt). Use plain text for application systems that mangle formatted files.
+- Applications tab: statuses, follow-up dates, interview times, notes, CSV export, and calendar reminders (.ics) that open in Calendar on iPhone and Mac.
+- Back up to Files or iCloud, which includes profiles and applications.

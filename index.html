@@ -57,6 +57,7 @@ ul.tips{margin:6px 0;padding-left:20px}
 #doc .hd span:last-child{font-weight:400;color:#444;white-space:nowrap}
 #doc ul{margin:3px 0 0;padding-left:18px}
 #doc b.k{background:#e6f0fb}
+#doc .q{font-weight:600;margin-top:8px}
 #doc .letter{white-space:pre-wrap;font-size:14px}
 @media(max-width:640px){#doc{padding:22px 16px}}
 @media print{body{background:#fff}header,nav,.np,.panel:not(#p3){display:none!important}#p3{display:block;border:0;padding:0}#doc{border:0;margin:0;padding:0}main{margin:0;padding:0;max-width:none}@page{margin:14mm}}
@@ -65,9 +66,11 @@ ul.tips{margin:6px 0;padding-left:20px}
 <nav class="np" role="tablist">
 <button role="tab" data-t="1" aria-selected="true">1. Your details</button>
 <button role="tab" data-t="2" aria-selected="false">2. The job</button>
-<button role="tab" data-t="3" aria-selected="false">3. Fit and documents</button></nav>
+<button role="tab" data-t="3" aria-selected="false">3. Fit and documents</button>
+<button role="tab" data-t="4" aria-selected="false">4. Applications</button></nav>
 <main>
 <section class="panel on" id="p1">
+<div class="row np" style="margin:0 0 12px"><label for="prof" style="margin:0">Profile</label><select id="prof" style="padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit"></select><button class="btn" id="pnew">Save as new profile</button><button class="btn" id="pdel" hidden>Delete profile</button></div>
 <div class="item np" id="up"><b>Start from your existing CV</b><p class="hint">Upload a PDF, Word (.docx) or text file. It is read inside your browser and not sent anywhere.</p>
 <div class="row"><input type="file" id="cvfile" accept=".pdf,.docx,.txt,.md" aria-label="Upload CV"><button class="btn" id="pastebtn">Paste text instead</button></div>
 <div id="pastebox" hidden><textarea id="pastetxt" placeholder="Paste your CV text here"></textarea><div class="row"><button class="btn pri" id="pasteGo">Extract details</button></div></div>
@@ -85,19 +88,23 @@ ul.tips{margin:6px 0;padding-left:20px}
 </section>
 <section class="panel" id="p3">
 <div class="np" id="report"></div>
-<div class="row np"><div class="seg" id="seg"><button class="btn" data-m="resume" aria-pressed="true">Resume (1 to 2 pages)</button><button class="btn" data-m="cv" aria-pressed="false">Full CV</button><button class="btn" data-m="letter" aria-pressed="false">Cover letter</button></div></div>
-<div class="row np"><button class="btn pri" id="pr">Print or save as PDF</button><button class="btn" id="cp">Copy text</button></div>
+<div class="row np"><div class="seg" id="seg"><button class="btn" data-m="resume" aria-pressed="true">Resume (1 to 2 pages)</button><button class="btn" data-m="cv" aria-pressed="false">Full CV</button><button class="btn" data-m="letter" aria-pressed="false">Cover letter</button><button class="btn" data-m="prep" aria-pressed="false">Interview prep</button></div></div>
+<div class="row np"><button class="btn pri" id="pr">Print or save as PDF</button><button class="btn" id="cp">Copy text</button><button class="btn" id="logapp">Log this application</button><button class="btn" id="dx">Download Word</button><button class="btn" id="dt">Download plain text</button></div>
 <p class="hint np">Click the page to edit any wording directly. Changing mode or regenerating resets edits.</p>
 <div id="doc" contenteditable="true" spellcheck="true"></div>
 </section>
+<section class="panel" id="p4"><h2>Applications</h2><p class="hint" id="asum"></p>
+<div class="row"><div class="seg" id="aflt"></div></div>
+<div class="row"><button class="btn pri" id="aadd">Add application</button><button class="btn" id="acsv">Export CSV</button></div>
+<div id="alist" style="margin-top:12px"></div></section>
 </main>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const KEY='tailor.v1';
-const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:''}});
+const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:''},apps:[],profiles:[],pi:-1});
 let S=blank(),mode='resume';
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r))}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const save=()=>{try{if(S.profiles&&S.profiles[S.pi])Object.assign(S.profiles[S.pi],JSON.parse(JSON.stringify({p:S.p,exp:S.exp,edu:S.edu})));localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const PF=[['name','Full name'],['title','Professional title'],['email','Email'],['phone','Phone'],['loc','Location'],['links','Links (LinkedIn, portfolio)']];
 const TA=[['summary','Summary (leave blank to auto-write one)'],['skills','Skills, comma separated'],['extra','Certifications, languages, projects (used in the full CV)']];
@@ -105,22 +112,27 @@ const LF={exp:[['role','Role'],['co','Company'],['dates','Dates'],['bullets','Ac
 function forms(){
  $('#pf').innerHTML=PF.map(([k,l])=>`<div><label for="p_${k}">${l}</label><input id="p_${k}" data-g="p" data-k="${k}" value="${esc(S.p[k])}"></div>`).join('')+TA.map(([k,l])=>`<div style="grid-column:1/-1"><label for="p_${k}">${l}</label><textarea id="p_${k}" data-g="p" data-k="${k}">${esc(S.p[k])}</textarea></div>`).join('');
  ['jt','jc','jd'].forEach(id=>{const e=$('#'+id);e.value=S.job[e.dataset.k]||''});
- lists();
+ lists();profUI();
 }
 function lists(){
  [['exp','#exl'],['edu','#edl']].forEach(([n,sel])=>{
   $(sel).innerHTML=S[n].map((o,i)=>`<div class="item"><div class="grid">${LF[n].map(([k,l,t])=>`<div ${t?'style="grid-column:1/-1"':''}><label>${l}</label>${t?`<textarea data-l="${n}" data-i="${i}" data-k="${k}">${esc(o[k])}</textarea>`:`<input data-l="${n}" data-i="${i}" data-k="${k}" value="${esc(o[k])}">`}</div>`).join('')}</div><div class="row"><button class="btn" data-del="${n}" data-i="${i}">Remove</button></div></div>`).join('');
  });
 }
-document.addEventListener('input',e=>{const t=e.target,d=t.dataset;if(d.g){S[d.g][d.k]=t.value;save()}else if(d.l){S[d.l][+d.i][d.k]=t.value;save()}});
+document.addEventListener('input',e=>{const t=e.target,d=t.dataset;if(d.g){S[d.g][d.k]=t.value;save()}else if(d.l){S[d.l][+d.i][d.k]=t.value;save()}else if(d.a){const x=S.apps.find(a=>String(a.id)===d.a);if(x){x[d.k]=t.value;save();if(d.k==='status'||d.k==='follow')apps()}}});
 document.addEventListener('click',e=>{
  const t=e.target.closest('button');if(!t)return;const d=t.dataset;
  if(d.t)tab(d.t);
  if(d.add){S[d.add].push(Object.fromEntries(LF[d.add].map(f=>[f[0],''])));save();lists()}
  if(d.del){S[d.del].splice(+d.i,1);if(!S[d.del].length)S[d.del].push(Object.fromEntries(LF[d.del].map(f=>[f[0],''])));save();lists()}
+ if(d.f){flt=d.f;apps()}
+ if(d.adel&&confirm('Delete this application?')){S.apps=S.apps.filter(a=>String(a.id)!==d.adel);save();apps()}
+ if(d.reuse){const x=S.apps.find(a=>String(a.id)===d.reuse);if(x){S.job={title:x.role,co:x.co,desc:x.desc||''};save();forms();tab(2)}}
+ if(d.ev!==undefined){const i=document.querySelector('[data-evi="'+d.ev+'"]'),v=i&&i.value.trim();if(v){if(!S.exp.length)S.exp.push({role:'',co:'',dates:'',bullets:''});S.exp[0].bullets=(S.exp[0].bullets?S.exp[0].bullets+'\n':'')+v;save();lists();gen()}}
+ if(d.cal){const[id,k]=d.cal.split(':'),x=S.apps.find(a=>String(a.id)===id);if(x)out(ics(x,k))}
  if(d.m){mode=d.m;$$('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===mode));gen()}
 });
-function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();window.scrollTo(0,0)}
+function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();if(n==4)apps();window.scrollTo(0,0)}
 $('#go').onclick=()=>tab(3);
 $('#pr').onclick=()=>window.print();
 $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#doc').innerText);$('#cp').textContent='Copied'}catch(e){$('#cp').textContent='Select the text and copy manually'}setTimeout(()=>$('#cp').textContent='Copy text',1800)};
@@ -171,6 +183,7 @@ function report(a){
  $('#report').innerHTML=`<h2>Fit check: ${esc(a.v[0])}</h2><div class="score"><b>${a.score}%</b><div class="bar" role="img" aria-label="${a.score} percent keyword match"><i style="width:${a.score}%"></i></div></div><p>${esc(a.v[1])}</p>
  <p><b>Matched (${a.matched.length})</b><br>${a.matched.map(k=>`<span class="chip">${esc(k)}</span>`).join('')||'None yet'}</p>
  <p><b>Not found in your details (${a.missing.length})</b><br>${a.missing.map(k=>`<span class="chip m">${esc(k)}</span>`).join('')||'None'}</p>
+ ${a.missing.length?`<p><b>Turn a gap into evidence</b></p><p class="hint">Only add a line if it is true. It goes onto your most recent role.</p>${a.missing.slice(0,5).map((k,i)=>`<div class="row" style="margin:6px 0"><label style="margin:0;min-width:90px">${esc(k)}</label><input data-evi="${i}" placeholder="Anything close you have done? One true line." style="flex:1;min-width:180px"><button class="btn" data-ev="${i}">Add as bullet</button></div>`).join('')}`:''}
  ${a.tips.length?`<p><b>Suggestions</b></p><ul class="tips">${a.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
  <p class="hint">This is a keyword comparison, so it cannot confirm a role is perfect. Pay, culture, seniority and growth still need your judgement. Before applying: check the closing date, confirm you meet any must-have, and tailor the cover letter.</p>`;
 }
@@ -181,6 +194,20 @@ function gen(){
  const mark=t=>esc(t);
  const topSk=skills().filter(s=>K.includes(norm(s))||a.matched.some(k=>s.toLowerCase().includes(k)));
  const summary=p.summary.trim()||`${p.title||'Professional'} with experience in ${(topSk.length?topSk:skills()).slice(0,4).join(', ')||'a range of areas'}${S.job.title?`, applying for the ${S.job.title} role${S.job.co?' at '+S.job.co:''}`:''}.`;
+ if(mode==='prep'){
+  if(!S.job.desc.trim()){$('#doc').innerHTML='<div>Paste a job description in step 2 to build interview prep.</div>';return}
+  const B=S.exp.flatMap(e=>lines(e.bullets)),ev=k=>B.find(b=>norm(b).includes(norm(k)));
+  const q=(t,tip)=>`<div class="q">${esc(t)}</div><div>${tip}</div>`,co=S.job.co||'this company',t3=a.matched.slice(0,3).join(', ');
+  let h=`<h3>Interview prep: ${esc(S.job.title||'the role')}${S.job.co?', '+esc(S.job.co):''}</h3><div class="ct">Answer with Situation, Task, Action, Result. Aim for about two minutes each. Edit anything below.</div><h4>OPENERS</h4>`;
+  h+=q('Tell me about yourself.',esc(`Present: ${p.title||'your current role'}${S.exp[0]&&S.exp[0].co?' at '+S.exp[0].co:''}. Past: one strength that got you here. Future: why ${S.job.title||'this role'} is the next step.`));
+  h+=q(`Why ${co}?`,esc(`Research their customers, product and recent news. Tie one point to what the advert stresses${t3?': '+t3:''}.`));
+  const mk=a.matched.slice(0,6);
+  if(mk.length)h+='<h4>EVIDENCE FROM YOUR EXPERIENCE</h4>'+mk.map(k=>q(`Tell me about a time you used ${k}.`,ev(k)?'Use this achievement: '+esc(ev(k)):'No achievement mentions it yet. Pick a project, say what you did and the result.')).join('');
+  if(a.missing.length)h+='<h4>GAPS TO PREPARE FOR</h4>'+a.missing.slice(0,4).map(k=>q(`The role mentions ${k}. What is your experience?`,'Be honest. Name your closest experience, then show how fast you pick up something new.')).join('');
+  const nb=B.filter(b=>/\d/.test(b)).slice(0,3);
+  h+='<h4>GENERAL</h4>'+q('Tell me about a time something went wrong.','Pick a real setback and spend most of the answer on what you changed.')+q('How do you handle competing deadlines?','Describe how you rank work and who you tell.')+(nb.length?q('Your strongest numbers to reuse in any answer:','<ul>'+nb.map(b=>`<li>${esc(b)}</li>`).join('')+'</ul>'):'');
+  h+='<h4>QUESTIONS TO ASK THEM</h4><ul><li>What does success look like in the first 90 days?</li><li>How is the team set up, and who would I work with most?</li><li>What is the biggest challenge in this role right now?</li><li>What are the next steps and timeline?</li></ul>';
+  $('#doc').innerHTML=h;return}
  if(mode==='letter'){
   const e=S.exp[0]||{},best=lines(e.bullets).sort((x,y)=>rank(y)-rank(x))[0];
   const m=a.matched.filter(k=>!/^\d/.test(k)).slice(0,3);
@@ -286,8 +313,67 @@ $('#cvfile').onchange=e=>{const f=e.target.files[0];if(f)readCV(f);e.target.valu
 $('#pastebtn').onclick=()=>{const b=$('#pastebox');b.hidden=!b.hidden};
 $('#pasteGo').onclick=()=>{const t=$('#pastetxt').value;if(t.trim().length<30){$('#upmsg').textContent='Paste more text first.';return}applyCV(parseCV(t),t.length)};
 const up=$('#up');['dragover','drop'].forEach(ev=>up.addEventListener(ev,e=>{e.preventDefault();if(ev==='drop'&&e.dataTransfer.files[0])readCV(e.dataTransfer.files[0])}));
+/* ---- Application tracker ---- */
+const ST=['Saved','Applied','Interview','Offer','Rejected','Withdrawn'],ACT=['Applied','Interview'];let flt='All';
+const today=()=>new Date().toISOString().slice(0,10),inDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+function newApp(o){S.apps.unshift(Object.assign({id:Date.now()+Math.random(),co:'',role:'',url:'',status:'Applied',date:today(),follow:inDays(7),notes:'',score:'',desc:'',int:'',prof:''},o));save()}
+function apps(){
+ const A=S.apps,t=today(),isDue=a=>a.follow&&a.follow<=t&&ACT.includes(a.status);
+ $('#aflt').innerHTML=['All',...ST].map(s=>`<button class="btn" data-f="${s}" aria-pressed="${flt===s}">${s}${s==='All'?'':' ('+A.filter(a=>a.status===s).length+')'}</button>`).join('');
+ const due=A.filter(isDue).length;
+ $('#asum').textContent=A.length?`${A.length} total, ${A.filter(a=>ACT.includes(a.status)).length} active${due?`, ${due} follow-up${due>1?'s':''} due`:''}.`:'No applications yet. Log one from the Fit and documents tab, or add one here.';
+ $('#alist').innerHTML=A.filter(a=>flt==='All'||a.status===flt).map(a=>{const f=(l,k,type)=>`<div><label>${l}</label><input ${type?`type="${type}"`:''} data-a="${a.id}" data-k="${k}" value="${esc(a[k])}"></div>`;
+  return `<div class="item"><div class="grid">${f('Role','role')}${f('Company','co')}
+  <div><label>Status</label><select data-a="${a.id}" data-k="status" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit">${ST.map(s=>`<option${s===a.status?' selected':''}>${s}</option>`).join('')}</select></div>
+  ${f('Date applied','date','date')}${f('Follow up on','follow','date')}${f('Interview date and time','int','datetime-local')}${f('Link to advert','url')}
+  <div style="grid-column:1/-1"><label>Notes (contacts, salary, interview dates)</label><textarea data-a="${a.id}" data-k="notes">${esc(a.notes)}</textarea></div></div>
+  <div class="row">${a.prof?`<span class="chip">${esc(a.prof)}</span>`:''}${a.score!==''?`<span class="chip">Fit ${esc(a.score)}%</span>`:''}${isDue(a)?'<span class="chip m">Follow-up due</span>':''}${a.follow?`<button class="btn" data-cal="${a.id}:f">Follow-up to calendar</button>`:''}${a.int?`<button class="btn" data-cal="${a.id}:i">Interview to calendar</button>`:''}${a.desc?`<button class="btn" data-reuse="${a.id}">Reuse this job</button>`:''}<button class="btn" data-adel="${a.id}">Delete</button></div></div>`}).join('');
+}
+$('#aadd').onclick=()=>{newApp({status:'Saved',date:'',follow:''});flt='All';apps()};
+$('#logapp').onclick=()=>{const b=$('#logapp'),say=m=>{b.textContent=m;setTimeout(()=>b.textContent='Log this application',2000)};
+ if(!S.job.title&&!S.job.co){say('Add job title or company first');return}
+ if(S.apps.some(a=>a.role===S.job.title&&a.co===S.job.co&&a.desc===S.job.desc)){say('Already logged');return}
+ newApp({role:S.job.title,co:S.job.co,score:analyse().score,desc:S.job.desc,prof:(S.profiles[S.pi]||{}).n||''});say('Logged. See tab 4')};
+$('#acsv').onclick=async()=>{const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+ const rows=[['Role','Company','Status','Applied','Follow-up','Fit %','Link','Notes'],...S.apps.map(a=>[a.role,a.co,a.status,a.date,a.follow,a.score,a.url,a.notes])];
+ const f=new File([rows.map(r=>r.map(q).join(',')).join('\n')],'applications.csv',{type:'text/csv'});
+ try{if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f]});else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;a.click()}}catch(e){}};
+/* ---- Profiles, downloads, calendar ---- */
+const clone=o=>JSON.parse(JSON.stringify(o));
+function profUI(){$('#prof').innerHTML='<option value="-1">Working copy</option>'+S.profiles.map((x,i)=>`<option value="${i}"${i===S.pi?' selected':''}>${esc(x.n)}</option>`).join('');$('#pdel').hidden=S.pi<0}
+$('#prof').onchange=e=>{S.pi=+e.target.value;if(S.pi>=0){const x=S.profiles[S.pi];S.p=clone(x.p);S.exp=clone(x.exp);S.edu=clone(x.edu)}save();forms()};
+$('#pnew').onclick=()=>{const n=prompt('Name this profile, for example "Analyst roles"');if(!n)return;S.profiles.push({n,p:clone(S.p),exp:clone(S.exp),edu:clone(S.edu)});S.pi=S.profiles.length-1;save();profUI()};
+$('#pdel').onclick=()=>{if(S.pi>=0&&confirm('Delete this profile? Your current details stay as a working copy.')){S.profiles.splice(S.pi,1);S.pi=-1;save();profUI()}};
+async function out(f){try{if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f]});else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}}catch(e){}}
+function docLines(){const o=[];[...$('#doc').children].forEach(n=>{
+ if(n.tagName==='H3')o.push({t:n.innerText,s:'name'});
+ else if(n.tagName==='H4')o.push({t:n.innerText,s:'h'});
+ else if(n.tagName==='UL')[...n.children].forEach(li=>o.push({t:li.innerText,s:'b'}));
+ else if(n.classList.contains('q'))o.push({t:n.innerText,s:'r'});
+ else if(n.classList.contains('hd'))o.push({t:[...n.children].map(x=>x.innerText).filter(Boolean).join('  |  '),s:'r'});
+ else n.innerText.split('\n').forEach(t=>o.push({t,s:''}))});return o}
+const fname=()=>(S.p.name||'CV').replace(/[^\w ]+/g,'').trim()+' - '+({resume:'Resume',cv:'CV',letter:'Cover letter',prep:'Interview prep'})[mode];
+async function docx(){
+ const x=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+ const P=l=>{const b=['name','h','r'].includes(l.s),sz=l.s==='name'?36:l.s==='h'?24:21;return `<w:p><w:pPr><w:spacing w:before="${l.s==='h'?200:40}" w:after="40"/>${l.s==='b'?'<w:ind w:left="360" w:hanging="220"/>':''}</w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>${b?'<w:b/>':''}<w:sz w:val="${sz}"/></w:rPr><w:t xml:space="preserve">${l.s==='b'?'• ':''}${x(l.t)}</w:t></w:r></w:p>`};
+ const z=new JSZip(),H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+ z.file('[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+ z.file('_rels/.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+ z.file('word/document.xml',H+'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+docLines().map(P).join('')+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="850" w:right="850" w:bottom="850" w:left="850" w:header="400" w:footer="400" w:gutter="0"/></w:sectPr></w:body></w:document>');
+ return new File([await z.generateAsync({type:'blob'})],fname()+'.docx',{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+}
+$('#dx').onclick=async()=>{if(typeof JSZip==='undefined'){alert('The Word builder needs an internet connection the first time.');return}out(await docx())};
+$('#dt').onclick=()=>out(new File([docLines().map(l=>l.s==='h'?'\n'+l.t.toUpperCase():l.s==='b'?'- '+l.t:l.t).join('\n')],fname()+'.txt',{type:'text/plain'}));
+function ics(a,k){
+ const iv=k==='i',st=iv?a.int:a.follow+'T09:00',dur=iv?60:30,al=iv?60:10,title=(iv?'Interview: ':'Follow up: ')+a.role+' at '+a.co;
+ const p=n=>String(n).padStart(2,'0'),f=d=>d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'T'+p(d.getHours())+p(d.getMinutes())+'00',d0=new Date(st),d1=new Date(+d0+dur*6e4);
+ const c=t=>String(t||'').replace(/[,;\n]/g,' ');
+ const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Tailor//EN','BEGIN:VEVENT','UID:'+String(a.id).replace(/\W/g,'')+k+'@tailor','DTSTAMP:'+new Date().toISOString().replace(/[-:]|\.\d+/g,''),'DTSTART:'+f(d0),'DTEND:'+f(d1),'SUMMARY:'+c(title),'DESCRIPTION:'+c(a.url),'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Reminder','TRIGGER:-PT'+al+'M','END:VALARM','END:VEVENT','END:VCALENDAR'];
+ return new File([L.join('\r\n')],'tailor-'+(iv?'interview':'follow-up')+'.ics',{type:'text/calendar'});
+}
 forms();bkStatus();
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}</script>
