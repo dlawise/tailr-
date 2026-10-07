@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f4e8c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tailor">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Tailor: CV and Resume Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5f8;--card:#fff;--ink:#17233a;--mut:#5b6678;--line:#d9dfe8;--acc:#1f4e8c;--acc-ink:#fff;--ok:#0f766e;--okbg:#d9f2ee;--warn:#9a5b00;--warnbg:#fdebc8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--card:#18223a;--ink:#e8edf6;--mut:#9aa7bd;--line:#2c3a57;--acc:#7fb0f0;--acc-ink:#0f1624;--ok:#5fd3c4;--okbg:#12403c;--warn:#f2b455;--warnbg:#47340f}}
+:root[data-theme="dark"]{--bg:#0f1624;--card:#18223a;--ink:#e8edf6;--mut:#9aa7bd;--line:#2c3a57;--acc:#7fb0f0;--acc-ink:#0f1624;--ok:#5fd3c4;--okbg:#12403c;--warn:#f2b455;--warnbg:#47340f}
+*{box-sizing:border-box}[hidden]{display:none!important}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+header{padding:20px 16px 8px;max-width:980px;margin:0 auto}
+h1{font:700 26px "Source Serif 4",Georgia,serif;margin:0}
+header p{margin:4px 0 0;color:var(--mut)}
+nav{display:flex;gap:6px;max-width:980px;margin:12px auto 0;padding:0 16px;flex-wrap:wrap}
+nav button{flex:1;min-width:110px;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font:inherit;cursor:pointer}
+nav button[aria-selected=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
+main{max-width:980px;margin:12px auto 40px;padding:0 16px}
+.panel{display:none;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.panel.on{display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:3px}
+input,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:84px;resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+h2{font:600 17px "Source Serif 4",Georgia,serif;margin:20px 0 8px}
+h2:first-child{margin-top:0}
+.item{border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px}
+.btn{padding:9px 14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font:inherit;cursor:pointer}
+.btn.pri{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.hint{color:var(--mut);font-size:13px;margin:4px 0 0}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.score b{font:700 40px "Source Serif 4",Georgia,serif}
+.bar{height:10px;border-radius:5px;background:var(--line);flex:1;min-width:140px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+.chip{display:inline-block;padding:2px 9px;margin:2px 3px 2px 0;border-radius:12px;font-size:13px;background:var(--okbg);color:var(--ok)}
+.chip.m{background:var(--warnbg);color:var(--warn)}
+ul.tips{margin:6px 0;padding-left:20px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+#doc{background:#fff;color:#111;margin-top:12px;padding:40px 44px;border:1px solid var(--line);font:13px/1.45 "Source Serif 4",Georgia,serif;min-height:420px;outline:none}
+#doc h3{font:700 24px "Source Serif 4",Georgia,serif;margin:0}
+#doc .sub{color:#333;margin:2px 0}
+#doc .ct{color:#444;font-size:12px;margin-bottom:6px;border-bottom:2px solid #1f4e8c;padding-bottom:8px}
+#doc h4{font:700 12.5px "Source Serif 4",Georgia,serif;letter-spacing:.06em;color:#1f4e8c;margin:14px 0 4px;border-bottom:1px solid #ccd;padding-bottom:2px}
+#doc .hd{display:flex;justify-content:space-between;gap:10px;font-weight:600;margin-top:7px}
+#doc .hd span:last-child{font-weight:400;color:#444;white-space:nowrap}
+#doc ul{margin:3px 0 0;padding-left:18px}
+#doc b.k{background:#e6f0fb}
+#doc .letter{white-space:pre-wrap;font-size:14px}
+@media(max-width:640px){#doc{padding:22px 16px}}
+@media print{body{background:#fff}header,nav,.np,.panel:not(#p3){display:none!important}#p3{display:block;border:0;padding:0}#doc{border:0;margin:0;padding:0}main{margin:0;padding:0;max-width:none}@page{margin:14mm}}
+</style></head><body>
+<header class="np"><h1>Tailor</h1><p>Paste a job. Add your details. Get a matched resume, CV and cover letter, plus an honest fit check.</p></header>
+<nav class="np" role="tablist">
+<button role="tab" data-t="1" aria-selected="true">1. Your details</button>
+<button role="tab" data-t="2" aria-selected="false">2. The job</button>
+<button role="tab" data-t="3" aria-selected="false">3. Fit and documents</button></nav>
+<main>
+<section class="panel on" id="p1">
+<div class="item np" id="up"><b>Start from your existing CV</b><p class="hint">Upload a PDF, Word (.docx) or text file. It is read inside your browser and not sent anywhere.</p>
+<div class="row"><input type="file" id="cvfile" accept=".pdf,.docx,.txt,.md" aria-label="Upload CV"><button class="btn" id="pastebtn">Paste text instead</button></div>
+<div id="pastebox" hidden><textarea id="pastetxt" placeholder="Paste your CV text here"></textarea><div class="row"><button class="btn pri" id="pasteGo">Extract details</button></div></div>
+<p class="hint" id="upmsg" role="status"></p></div>
+<h2>Contact and summary</h2><div class="grid" id="pf"></div>
+<h2>Experience</h2><div id="exl"></div><button class="btn" data-add="exp">Add role</button>
+<h2>Education</h2><div id="edl"></div><button class="btn" data-add="edu">Add qualification</button>
+<div class="row np"><button class="btn" id="ex">Load example</button><button class="btn pri" id="exp">Back up to Files or iCloud</button><button class="btn" id="imp">Restore backup</button><button class="btn" id="clr">Clear all</button><input type="file" id="file" accept=".json" hidden></div>
+<p class="hint" id="bkmsg" role="status"></p><p class="hint">Details are saved on this device only. Back up to move them to another device or keep them safe.</p>
+</section>
+<section class="panel" id="p2">
+<h2>The job</h2><div class="grid"><div><label for="jt">Job title</label><input id="jt" data-g="job" data-k="title"></div><div><label for="jc">Company</label><input id="jc" data-g="job" data-k="co"></div></div>
+<label for="jd" style="margin-top:12px">Full job description</label><textarea id="jd" data-g="job" data-k="desc" style="min-height:260px" placeholder="Paste the whole advert, including requirements and nice-to-haves."></textarea>
+<div class="row"><button class="btn pri" id="go">Check fit and generate</button></div>
+</section>
+<section class="panel" id="p3">
+<div class="np" id="report"></div>
+<div class="row np"><div class="seg" id="seg"><button class="btn" data-m="resume" aria-pressed="true">Resume (1 to 2 pages)</button><button class="btn" data-m="cv" aria-pressed="false">Full CV</button><button class="btn" data-m="letter" aria-pressed="false">Cover letter</button></div></div>
+<div class="row np"><button class="btn pri" id="pr">Print or save as PDF</button><button class="btn" id="cp">Copy text</button></div>
+<p class="hint np">Click the page to edit any wording directly. Changing mode or regenerating resets edits.</p>
+<div id="doc" contenteditable="true" spellcheck="true"></div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const KEY='tailor.v1';
+const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:''}});
+let S=blank(),mode='resume';
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const PF=[['name','Full name'],['title','Professional title'],['email','Email'],['phone','Phone'],['loc','Location'],['links','Links (LinkedIn, portfolio)']];
+const TA=[['summary','Summary (leave blank to auto-write one)'],['skills','Skills, comma separated'],['extra','Certifications, languages, projects (used in the full CV)']];
+const LF={exp:[['role','Role'],['co','Company'],['dates','Dates'],['bullets','Achievements, one per line. Add numbers where true.','t']],edu:[['deg','Qualification'],['school','Institution'],['dates','Dates']]};
+function forms(){
+ $('#pf').innerHTML=PF.map(([k,l])=>`<div><label for="p_${k}">${l}</label><input id="p_${k}" data-g="p" data-k="${k}" value="${esc(S.p[k])}"></div>`).join('')+TA.map(([k,l])=>`<div style="grid-column:1/-1"><label for="p_${k}">${l}</label><textarea id="p_${k}" data-g="p" data-k="${k}">${esc(S.p[k])}</textarea></div>`).join('');
+ ['jt','jc','jd'].forEach(id=>{const e=$('#'+id);e.value=S.job[e.dataset.k]||''});
+ lists();
+}
+function lists(){
+ [['exp','#exl'],['edu','#edl']].forEach(([n,sel])=>{
+  $(sel).innerHTML=S[n].map((o,i)=>`<div class="item"><div class="grid">${LF[n].map(([k,l,t])=>`<div ${t?'style="grid-column:1/-1"':''}><label>${l}</label>${t?`<textarea data-l="${n}" data-i="${i}" data-k="${k}">${esc(o[k])}</textarea>`:`<input data-l="${n}" data-i="${i}" data-k="${k}" value="${esc(o[k])}">`}</div>`).join('')}</div><div class="row"><button class="btn" data-del="${n}" data-i="${i}">Remove</button></div></div>`).join('');
+ });
+}
+document.addEventListener('input',e=>{const t=e.target,d=t.dataset;if(d.g){S[d.g][d.k]=t.value;save()}else if(d.l){S[d.l][+d.i][d.k]=t.value;save()}});
+document.addEventListener('click',e=>{
+ const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+ if(d.t)tab(d.t);
+ if(d.add){S[d.add].push(Object.fromEntries(LF[d.add].map(f=>[f[0],''])));save();lists()}
+ if(d.del){S[d.del].splice(+d.i,1);if(!S[d.del].length)S[d.del].push(Object.fromEntries(LF[d.del].map(f=>[f[0],''])));save();lists()}
+ if(d.m){mode=d.m;$$('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===mode));gen()}
+});
+function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();window.scrollTo(0,0)}
+$('#go').onclick=()=>tab(3);
+$('#pr').onclick=()=>window.print();
+$('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#doc').innerText);$('#cp').textContent='Copied'}catch(e){$('#cp').textContent='Select the text and copy manually'}setTimeout(()=>$('#cp').textContent='Copy text',1800)};
+$('#clr').onclick=()=>{if(confirm('Clear all saved details and the job?')){S=blank();save();forms()}};
+const LB='tailor.lastBackup';
+function bkStatus(){let t='';try{t=localStorage.getItem(LB)||''}catch(e){}const el=$('#bkmsg');if(!t){el.textContent='No backup yet.';return}const d=new Date(+t),days=Math.floor((Date.now()-d)/864e5);el.textContent='Last backup: '+d.toLocaleDateString()+(days>=14?'. It has been a while, so back up again.':'.')}
+async function backup(){
+ const name='tailor-backup-'+new Date().toISOString().slice(0,10)+'.json',f=new File([JSON.stringify(S,null,1)],name,{type:'application/json'});
+ try{
+  if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Tailor backup'});
+  else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+  try{localStorage.setItem(LB,String(Date.now()))}catch(e){}bkStatus();
+ }catch(e){if(e.name!=='AbortError')$('#bkmsg').textContent='Backup failed: '+(e.message||e)}
+}
+$('#exp').onclick=backup;
+$('#imp').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(!d.p||!d.exp)throw 0;if((S.p.name||S.exp.some(e=>e.role))&&!confirm('Replace your current details with this backup?'))return;S=Object.assign(blank(),d);save();forms()}catch(x){alert('That file is not a Tailor backup.')}})};
+$('#ex').onclick=()=>{S={p:{name:'Alex Morgan',title:'Operations Analyst',email:'alex@example.com',phone:'07700 900123',loc:'Manchester, UK',links:'linkedin.com/in/alexmorgan',summary:'',skills:'Excel, SQL, Power BI, stakeholder reporting, process improvement, Python, project coordination',extra:'Lean Six Sigma Green Belt. Languages: English, Spanish.'},exp:[{role:'Operations Analyst',co:'Northway Logistics',dates:'2022 to present',bullets:'Built Power BI dashboards that cut weekly reporting time by 6 hours\nReduced delivery errors 18% by redesigning the dispatch checklist\nWrote SQL queries to track on-time performance across 12 depots\nSupported team meetings and general admin'},{role:'Coordinator',co:'Brightside Retail',dates:'2019 to 2022',bullets:'Coordinated stock projects across 5 stores\nTrained 14 new starters on inventory systems'}],edu:[{deg:'BSc Business Management',school:'University of Salford',dates:'2016 to 2019'}],job:{title:'Senior Data Analyst',co:'Acme Freight',desc:'We need a Senior Data Analyst to own reporting and analytics for our operations team. You will build dashboards in Power BI and Tableau, write SQL daily, and present insights to stakeholders. 3+ years experience required. Python or R is a plus. Experience with process improvement and forecasting is desirable. Strong communication skills and ownership of projects.'}};save();forms()};
+const STOP=new Set('the and for you your with are our will that this from have has can all any not but who what who they their them its was were been being more most also into over about such per out one two use used using able etc via within across including include role team work working experience years year ability strong good great looking join help well new well must should may might would could than then these those other each both while where when which how why able need needs required requirements responsibilities skills plus desirable preferred company business candidate candidates position job opportunity benefits salary apply'.split(' '));
+const norm=w=>w.toLowerCase().replace(/[^a-z0-9+#]/g,'').replace(/s$/,'');
+const terms=t=>(String(t).toLowerCase().match(/[a-z][a-z0-9+#.\-]{1,}/g)||[]).map(w=>w.replace(/[.\-]+$/,'')).filter(w=>w.length>2&&!STOP.has(w));
+const lines=t=>String(t||'').split('\n').map(x=>x.trim()).filter(Boolean);
+const skills=()=>S.p.skills.split(/[,\n]/).map(x=>x.trim()).filter(Boolean);
+function analyse(){
+ const jd=S.job.desc,all=[S.p.title,S.p.summary,S.p.skills,S.p.extra,...S.exp.map(e=>e.role+' '+e.bullets),...S.edu.map(e=>e.deg)].join(' ');
+ const have=new Set(terms(all).map(norm)),f={};
+ terms(jd).forEach(w=>f[w]=(f[w]||0)+1);
+ let keys=Object.entries(f).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,26).map(e=>e[0]);
+ skills().forEach(s=>{if(jd.toLowerCase().includes(s.toLowerCase())&&!keys.some(k=>norm(k)===norm(s)))keys.push(s.toLowerCase())});
+ const matched=keys.filter(k=>have.has(norm(k))||all.toLowerCase().includes(k)),missing=keys.filter(k=>!matched.includes(k));
+ const score=keys.length?Math.round(100*matched.length/keys.length):0;
+ const yrs=(jd.match(/(\d+)\s*\+?\s*(?:years|yrs)/i)||[])[1];
+ const tips=[];
+ if(!S.p.summary.trim())tips.push('No summary written. A draft was generated; replace it with two sentences in your own voice.');
+ if(skills().length<6)tips.push('Add more skills. Aim for 8 to 12 that you can back up.');
+ const bl=S.exp.flatMap(e=>lines(e.bullets));
+ if(bl.length&&bl.filter(b=>/\d/.test(b)).length/bl.length<.4)tips.push('Fewer than 40% of your achievements include a number. Add counts, percentages, time saved or money where true.');
+ if(bl.some(b=>b.split(' ').length<5))tips.push('Some bullets are very short or task-like. Say what you did and what changed.');
+ if(S.job.title&&!terms(S.p.title).some(w=>terms(S.job.title).map(norm).includes(norm(w))))tips.push('Your professional title shares no words with the job title. Consider a headline that bridges them, only if it is honest.');
+ if(missing.length)tips.push('Only add missing keywords if you genuinely have the skill. Otherwise name the closest thing you have done.');
+ if(!S.p.email||!S.p.phone)tips.push('Add both an email and a phone number.');
+ if(yrs)tips.push(`The advert asks for ${yrs}+ years. Check your dates make that visible, or lead with the strongest relevant stretch.`);
+ const v=score>=70?['Strong fit','Your details cover most of what the advert stresses. Apply and lead with the matched strengths.']:score>=45?['Good fit with gaps','You match the core. Close the gaps in your wording where true, and address the rest in the cover letter.']:['Stretch role','Large parts of the advert are not in your details yet. Either add real evidence you have not listed, or treat this as a reach.'];
+ return{keys,matched,missing,score,tips,v,yrs};
+}
+function report(a){
+ if(!S.job.desc.trim()){$('#report').innerHTML='<h2>Fit check</h2><p>Paste a job description in step 2 to get a fit check.</p>';return}
+ $('#report').innerHTML=`<h2>Fit check: ${esc(a.v[0])}</h2><div class="score"><b>${a.score}%</b><div class="bar" role="img" aria-label="${a.score} percent keyword match"><i style="width:${a.score}%"></i></div></div><p>${esc(a.v[1])}</p>
+ <p><b>Matched (${a.matched.length})</b><br>${a.matched.map(k=>`<span class="chip">${esc(k)}</span>`).join('')||'None yet'}</p>
+ <p><b>Not found in your details (${a.missing.length})</b><br>${a.missing.map(k=>`<span class="chip m">${esc(k)}</span>`).join('')||'None'}</p>
+ ${a.tips.length?`<p><b>Suggestions</b></p><ul class="tips">${a.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
+ <p class="hint">This is a keyword comparison, so it cannot confirm a role is perfect. Pay, culture, seniority and growth still need your judgement. Before applying: check the closing date, confirm you meet any must-have, and tailor the cover letter.</p>`;
+}
+function gen(){
+ const a=analyse();report(a);
+ const p=S.p,cv=mode==='cv',K=a.matched.map(norm);
+ const rank=t=>terms(t).filter(w=>K.includes(norm(w))).length;
+ const mark=t=>esc(t);
+ const topSk=skills().filter(s=>K.includes(norm(s))||a.matched.some(k=>s.toLowerCase().includes(k)));
+ const summary=p.summary.trim()||`${p.title||'Professional'} with experience in ${(topSk.length?topSk:skills()).slice(0,4).join(', ')||'a range of areas'}${S.job.title?`, applying for the ${S.job.title} role${S.job.co?' at '+S.job.co:''}`:''}.`;
+ if(mode==='letter'){
+  const e=S.exp[0]||{},best=lines(e.bullets).sort((x,y)=>rank(y)-rank(x))[0];
+  const m=a.matched.filter(k=>!/^\d/.test(k)).slice(0,3);
+  $('#doc').innerHTML=`<div class="letter">${esc(`${p.name||'Your name'}\n${[p.email,p.phone].filter(Boolean).join(' | ')}\n\nDear ${S.job.co?'Hiring Team at '+S.job.co:'Hiring Team'},\n\nI am writing to apply for the ${S.job.title||'[role]'} position${S.job.co?' at '+S.job.co:''}. ${summary}\n\n${m.length?`The advert emphasises ${m.join(', ')}, which is where my background is strongest. `:''}${e.role?`In my role as ${e.role}${e.co?' at '+e.co:''}, `:''}${best?best.charAt(0).toLowerCase()+best.slice(1).replace(/\.$/,'')+'.':'[add your strongest relevant achievement].'}\n\n[Add one sentence on why this company and this role.]${a.missing.length?`\n\n[Optional: address a gap honestly, for example your closest experience to ${a.missing.slice(0,2).join(' or ')}.]`:''}\n\nI would welcome the chance to discuss how I can contribute. Thank you for your time.\n\nKind regards,\n${p.name||'Your name'}`)}</div>`;return;
+ }
+ let ex=S.exp.filter(e=>e.role||e.co);if(!cv)ex=ex.slice(0,4);
+ const sk=skills(),sks=cv?sk:[...sk.filter(s=>topSk.includes(s)),...sk.filter(s=>!topSk.includes(s))];
+ let h=`<h3>${esc(p.name||'Your name')}</h3><div class="sub">${esc(p.title)}</div><div class="ct">${[p.email,p.phone,p.loc,p.links].filter(Boolean).map(esc).join(' &nbsp;|&nbsp; ')}</div>`;
+ h+=`<h4>PROFILE</h4><div>${esc(summary)}</div>`;
+ if(sks.length)h+=`<h4>KEY SKILLS</h4><div>${sks.map(s=>topSk.includes(s)?`<b class="k">${esc(s)}</b>`:esc(s)).join(' &middot; ')}</div>`;
+ if(ex.length)h+='<h4>EXPERIENCE</h4>'+ex.map(e=>{let b=lines(e.bullets);if(!cv)b=b.map((t,i)=>[t,i]).sort((x,y)=>rank(y[0])-rank(x[0])||x[1]-y[1]).slice(0,4).map(x=>x[0]);return`<div class="hd"><span>${esc(e.role)}${e.co?', '+esc(e.co):''}</span><span>${esc(e.dates)}</span></div>${b.length?`<ul>${b.map(t=>`<li>${mark(t)}</li>`).join('')}</ul>`:''}`}).join('');
+ const ed=S.edu.filter(e=>e.deg||e.school);
+ if(ed.length)h+='<h4>EDUCATION</h4>'+ed.map(e=>`<div class="hd"><span>${esc(e.deg)}${e.school?', '+esc(e.school):''}</span><span>${esc(e.dates)}</span></div>`).join('');
+ if(cv&&p.extra.trim())h+=`<h4>ADDITIONAL INFORMATION</h4><div>${esc(p.extra).replace(/\n/g,'<br>')}</div>`;
+ $('#doc').innerHTML=h;
+}
+/* ---- CV upload and extraction ---- */
+const MON='jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec';
+const DT=new RegExp(`((?:(?:${MON})[a-z]*\\.?\\s+)?(?:19|20)\\d{2})\\s*(?:-|–|—|to|until)\\s*((?:(?:${MON})[a-z]*\\.?\\s+)?(?:(?:19|20)\\d{2}|present|current|now|date))`,'i');
+const HEAD=[['summary',/^(professional\s+)?(summary|profile|about( me)?|objective|personal statement|career objective)$/i],['exp',/^((work|professional|relevant|employment|career)\s+)?(experience|history)( history)?$|^employment( history)?$/i],['edu',/^(education|academic background|qualifications|education (and|&) training)$/i],['skills',/^((key|core|technical|professional|it)\s+)?(skills|competenc(ies|es)|expertise)( summary)?$/i],['extra',/^(certifications?|licen[cs]es?|languages?|projects?|awards?|achievements?|interests|hobbies|volunteer(ing)?( experience)?|publications|additional information)$/i]];
+const headType=l=>{const t=l.replace(/[:\s]+$/,'').trim();if(t.length>40)return null;const h=HEAD.find(h=>h[1].test(t));return h?[h[0],t]:null};
+const BUL=/^[-•*▪●◦–·]\s*/,TRIM=/^[\s()|,\-–—•]+|[\s()|,\-–—•]+$/g;
+function parseExp(lines){
+ const out=[];let c=null;
+ const head=s=>{const p=s.split(/\s+(?:at|@)\s+|\s*[|–—]\s*|,\s+|\s+-\s+/).map(x=>x.trim()).filter(Boolean);return{role:p[0]||'',co:p.slice(1).join(', ')}};
+ const nw=o=>{c=Object.assign({role:'',co:'',dates:'',bullets:[]},o);out.push(c)};
+ lines.forEach(l=>{
+  if(BUL.test(l)){if(!c)nw({});c.bullets.push(l.replace(BUL,''));return}
+  const dm=l.match(DT);
+  if(dm){const rest=l.replace(dm[0],'').replace(TRIM,'');
+   if(c&&!c.dates&&!c.bullets.length){c.dates=dm[0];if(rest){if(!c.role)Object.assign(c,head(rest));else if(!c.co)c.co=rest}}
+   else nw(Object.assign(head(rest),{dates:dm[0]}));return}
+  if(!c){nw(head(l));return}
+  if(c.bullets.length){
+   if(/^[a-z]/.test(l))c.bullets[c.bullets.length-1]+=' '+l;
+   else if(l.length<70&&!/[.;]$/.test(l))nw(head(l));else c.bullets.push(l);return}
+  if(c.dates){if(!c.co&&l.length<50&&!/[.;]$/.test(l))c.co=l;else c.bullets.push(l)}
+  else if(!c.co)c.co=l;else nw(head(l));
+ });
+ return out.filter(e=>e.role||e.co);
+}
+function parseEdu(lines){
+ const out=[];let c=null;
+ const DEG=/\b(bsc|ba|msc|ma|mba|phd|beng|meng|llb|bachelor|master|doctor|diploma|degree|a-levels?|gcses?|certificate|hnd|hnc|btec|associate)\b/i;
+ lines.forEach(l=>{
+  const dm=l.match(DT)||l.match(/(?:19|20)\d{2}/),d=dm?dm[0]:'',t=l.replace(d,'').replace(TRIM,'');
+  if(DEG.test(t)||!c){const p=t.split(/\s*[|–—]\s*|,\s+|\s+-\s+/).filter(Boolean);c={deg:p[0]||t,school:p.slice(1).join(', '),dates:d};out.push(c)}
+  else{if(t&&!c.school)c.school=t;if(d&&!c.dates)c.dates=d}
+ });
+ return out.filter(e=>e.deg||e.school);
+}
+function parseCV(txt){
+ const L=txt.replace(/\r/g,'').split('\n').map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean);
+ const sec={top:[]};let cur='top';
+ L.forEach(l=>{const h=headType(l);if(h){cur=h[0]==='extra'?'extra:'+h[1]:h[0];sec[cur]=sec[cur]||[]}else(sec[cur]=sec[cur]||[]).push(l)});
+ const R={p:{},exp:[],edu:[]},parts=sec.top.slice(0,14).flatMap(l=>l.split(/\s*[|•·]\s*/)).filter(Boolean),flat=parts.join(' ');
+ R.p.email=(flat.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)||[])[0]||'';
+ R.p.phone=parts.map(x=>(x.match(/\+?\d[\d\s().-]{8,}\d/)||[])[0]).find(x=>x&&x.replace(/\D/g,'').length>=9&&x.replace(/\D/g,'').length<=15)||'';
+ R.p.links=[...new Set((flat.match(/(?:https?:\/\/|www\.)\S+|(?:linkedin|github)\.com\/\S+/gi)||[]).map(x=>x.replace(/[.,;]+$/,'')))].join(', ');
+ const NM=/^[A-Z][A-Za-z'’.-]*(\s+[A-Z][A-Za-z'’.-]*){1,3}$/,plain=x=>!/[@\d]|https?:|www\.|linkedin|github/i.test(x);
+ const ni=parts.findIndex(x=>plain(x)&&NM.test(x));
+ if(ni>-1){let n=parts[ni];if(n===n.toUpperCase())n=n.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());R.p.name=n}
+ const LOC=/^[A-Z][\w .'-]+,\s*[A-Z][\w .'-]+$/;
+ R.p.loc=parts.find((x,i)=>i!==ni&&plain(x)&&LOC.test(x)&&x.length<45)||'';
+ R.p.title=parts.slice(ni+1,ni+5).find(x=>plain(x)&&x.length<60&&x!==R.p.loc&&!LOC.test(x))||'';
+ if(sec.summary)R.p.summary=sec.summary.join(' ');
+ if(sec.skills){const s=[],seen=new Set();sec.skills.forEach(l=>l.replace(BUL,'').replace(/^[^:,]{1,30}:\s*/,'').split(/[,;|•·▪●]|\s-\s|\s{2,}/).forEach(x=>{x=x.replace(BUL,'').trim();const k=x.toLowerCase();if(x.length>1&&x.length<36&&!seen.has(k)){seen.add(k);s.push(x)}}));R.p.skills=s.join(', ')}
+ const ex=Object.keys(sec).filter(k=>k.startsWith('extra:')).map(k=>k.slice(6).toLowerCase().replace(/^./,c=>c.toUpperCase())+': '+sec[k].map(x=>x.replace(BUL,'')).join('; '));
+ if(ex.length)R.p.extra=ex.join('\n');
+ if(sec.exp)R.exp=parseExp(sec.exp);
+ if(sec.edu)R.edu=parseEdu(sec.edu);
+ return R;
+}
+function applyCV(R,n){
+ const has=S.p.name||S.exp.some(e=>e.role||e.co),rep=!has||confirm('Replace your current details with this CV? OK replaces them. Cancel only fills empty fields.');
+ const found=[];
+ for(const k in R.p){if(R.p[k]){found.push(k);if(rep||!S.p[k])S.p[k]=R.p[k]}}
+ if(R.exp.length&&(rep||!S.exp.some(e=>e.role||e.co)))S.exp=R.exp.map(e=>({role:e.role,co:e.co,dates:e.dates,bullets:e.bullets.join('\n')}));
+ if(R.edu.length&&(rep||!S.edu.some(e=>e.deg||e.school)))S.edu=R.edu;
+ save();forms();
+ const lbl={name:'name',title:'title',email:'email',phone:'phone',loc:'location',links:'links',summary:'summary',skills:'skills',extra:'extras'};
+ $('#upmsg').textContent=(found.length||R.exp.length||R.edu.length)?`Read ${n} characters. Found: ${found.map(k=>lbl[k]).join(', ')}${found.length?', ':''}${R.exp.length} role(s), ${R.edu.length} qualification(s). Extraction is approximate, so check every field below, especially role and company order.`:'Text was read but no sections were recognised. Check the headings (Experience, Education, Skills) or paste the text instead.';
+}
+async function pdfText(buf){
+ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+ const pdf=await pdfjsLib.getDocument({data:buf}).promise,out=[];
+ for(let i=1;i<=pdf.numPages;i++){const c=await(await pdf.getPage(i)).getTextContent(),rows=[];
+  c.items.forEach(it=>{const y=Math.round(it.transform[5]);let r=rows.find(r=>Math.abs(r.y-y)<3);if(!r){r={y,t:[]};rows.push(r)}r.t.push([it.transform[4],it.str])});
+  rows.sort((a,b)=>b.y-a.y).forEach(r=>out.push(r.t.sort((a,b)=>a[0]-b[0]).map(x=>x[1]).join(' ').replace(/\s+/g,' ').trim()))}
+ return out.join('\n');
+}
+async function readCV(f){
+ const m=$('#upmsg');m.textContent='Reading '+f.name+'...';
+ try{const ext=f.name.split('.').pop().toLowerCase();let t='';
+  if(ext==='docx')t=(await mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()})).value;
+  else if(ext==='pdf')t=await pdfText(await f.arrayBuffer());
+  else t=await f.text();
+  if(t.trim().length<30){m.textContent='No readable text found. A scanned PDF has no text layer, so paste the text instead.';return}
+  applyCV(parseCV(t),t.length);
+ }catch(e){m.textContent='Could not read that file ('+(e.message||'error')+'). Try the paste option instead.'}
+}
+$('#cvfile').onchange=e=>{const f=e.target.files[0];if(f)readCV(f);e.target.value=''};
+$('#pastebtn').onclick=()=>{const b=$('#pastebox');b.hidden=!b.hidden};
+$('#pasteGo').onclick=()=>{const t=$('#pastetxt').value;if(t.trim().length<30){$('#upmsg').textContent='Paste more text first.';return}applyCV(parseCV(t),t.length)};
+const up=$('#up');['dragover','drop'].forEach(ev=>up.addEventListener(ev,e=>{e.preventDefault();if(ev==='drop'&&e.dataTransfer.files[0])readCV(e.dataTransfer.files[0])}));
+forms();bkStatus();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}</script>
+</body></html>
