@@ -57,6 +57,7 @@ ul.tips{margin:6px 0;padding-left:20px}
 #doc .hd span:last-child{font-weight:400;color:#444;white-space:nowrap}
 #doc ul{margin:3px 0 0;padding-left:18px}
 #doc b.k{background:#e6f0fb}
+a.item:hover{border-color:var(--acc)}
 #doc .q{font-weight:600;margin-top:8px}
 #doc .letter{white-space:pre-wrap;font-size:14px}
 @media(max-width:640px){#doc{padding:22px 16px}}
@@ -67,7 +68,8 @@ ul.tips{margin:6px 0;padding-left:20px}
 <button role="tab" data-t="1" aria-selected="true">1. Your details</button>
 <button role="tab" data-t="2" aria-selected="false">2. The job</button>
 <button role="tab" data-t="3" aria-selected="false">3. Fit and documents</button>
-<button role="tab" data-t="4" aria-selected="false">4. Applications</button></nav>
+<button role="tab" data-t="4" aria-selected="false">4. Applications</button>
+<button role="tab" data-t="5" aria-selected="false">5. Find jobs</button></nav>
 <main>
 <section class="panel on" id="p1">
 <div class="row np" style="margin:0 0 12px"><label for="prof" style="margin:0">Profile</label><select id="prof" style="padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit"></select><button class="btn" id="pnew">Save as new profile</button><button class="btn" id="pdel" hidden>Delete profile</button></div>
@@ -79,7 +81,8 @@ ul.tips{margin:6px 0;padding-left:20px}
 <h2>Experience</h2><div id="exl"></div><button class="btn" data-add="exp">Add role</button>
 <h2>Education</h2><div id="edl"></div><button class="btn" data-add="edu">Add qualification</button>
 <div class="row np"><button class="btn" id="ex">Load example</button><button class="btn pri" id="exp">Back up to Files or iCloud</button><button class="btn" id="imp">Restore backup</button><button class="btn" id="clr">Clear all</button><input type="file" id="file" accept=".json" hidden></div>
-<p class="hint" id="bkmsg" role="status"></p><p class="hint">Details are saved on this device only. Back up to move them to another device or keep them safe.</p>
+<p class="hint" id="bkmsg" role="status"></p>
+<details class="np"><summary class="hint">Backup not working? Copy and paste instead</summary><div class="row"><button class="btn" id="bkcopy">Copy backup text</button><button class="btn" id="bkpaste">Restore from pasted text</button></div></details><p class="hint">Details are saved on this device only. Back up to move them to another device or keep them safe.</p>
 </section>
 <section class="panel" id="p2">
 <h2>The job</h2><div class="grid"><div><label for="jt">Job title</label><input id="jt" data-g="job" data-k="title"></div><div><label for="jc">Company</label><input id="jc" data-g="job" data-k="co"></div></div>
@@ -97,11 +100,17 @@ ul.tips{margin:6px 0;padding-left:20px}
 <div class="row"><div class="seg" id="aflt"></div></div>
 <div class="row"><button class="btn pri" id="aadd">Add application</button><button class="btn" id="acsv">Export CSV</button></div>
 <div id="alist" style="margin-top:12px"></div></section>
+<section class="panel" id="p5"><h2>Find jobs</h2><p class="hint">Each button opens a search in a new tab. Copy an advert you like, paste it into step 2 for a fit check, then log it in Applications. Applying happens on the employer's site, where you submit your downloaded CV.</p>
+<div class="grid" style="margin-top:12px"><div><label for="jw">Job title or keywords</label><input id="jw" data-g="js" data-k="what"></div><div><label for="jl">Where</label><input id="jl" data-g="js" data-k="where"></div>
+<div><label for="jd2">Posted within</label><select id="jd2" data-g="js" data-k="days" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit"><option value="1">Last 24 hours</option><option value="3">Last 3 days</option><option value="7">Last 7 days</option><option value="14">Last 14 days</option><option value="30">Last 30 days</option></select></div>
+<div style="align-self:end"><label style="display:flex;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="jr" style="width:auto"> Remote only</label></div></div>
+<div id="jsug" style="margin-top:10px"></div><div id="jlinks" class="grid" style="margin-top:12px"></div>
+<p class="hint">Tip: set up job alerts on the boards you like so new matches reach you by email.</p></section>
 </main>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const KEY='tailor.v1';
-const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:''},apps:[],profiles:[],pi:-1});
+const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:''},apps:[],profiles:[],pi:-1,js:{what:'',where:'',days:'7',remote:false}});
 let S=blank(),mode='resume';
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r))}catch(e){}
 const save=()=>{try{if(S.profiles&&S.profiles[S.pi])Object.assign(S.profiles[S.pi],JSON.parse(JSON.stringify({p:S.p,exp:S.exp,edu:S.edu})));localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -112,14 +121,14 @@ const LF={exp:[['role','Role'],['co','Company'],['dates','Dates'],['bullets','Ac
 function forms(){
  $('#pf').innerHTML=PF.map(([k,l])=>`<div><label for="p_${k}">${l}</label><input id="p_${k}" data-g="p" data-k="${k}" value="${esc(S.p[k])}"></div>`).join('')+TA.map(([k,l])=>`<div style="grid-column:1/-1"><label for="p_${k}">${l}</label><textarea id="p_${k}" data-g="p" data-k="${k}">${esc(S.p[k])}</textarea></div>`).join('');
  ['jt','jc','jd'].forEach(id=>{const e=$('#'+id);e.value=S.job[e.dataset.k]||''});
- lists();profUI();
+ lists();profUI();brand();
 }
 function lists(){
  [['exp','#exl'],['edu','#edl']].forEach(([n,sel])=>{
   $(sel).innerHTML=S[n].map((o,i)=>`<div class="item"><div class="grid">${LF[n].map(([k,l,t])=>`<div ${t?'style="grid-column:1/-1"':''}><label>${l}</label>${t?`<textarea data-l="${n}" data-i="${i}" data-k="${k}">${esc(o[k])}</textarea>`:`<input data-l="${n}" data-i="${i}" data-k="${k}" value="${esc(o[k])}">`}</div>`).join('')}</div><div class="row"><button class="btn" data-del="${n}" data-i="${i}">Remove</button></div></div>`).join('');
  });
 }
-document.addEventListener('input',e=>{const t=e.target,d=t.dataset;if(d.g){S[d.g][d.k]=t.value;save()}else if(d.l){S[d.l][+d.i][d.k]=t.value;save()}else if(d.a){const x=S.apps.find(a=>String(a.id)===d.a);if(x){x[d.k]=t.value;save();if(d.k==='status'||d.k==='follow')apps()}}});
+document.addEventListener('input',e=>{const t=e.target,d=t.dataset;if(d.g){S[d.g][d.k]=t.value;save();if(d.g==='js')jobs();if(d.g==='p'&&d.k==='name')brand()}else if(d.l){S[d.l][+d.i][d.k]=t.value;save()}else if(d.a){const x=S.apps.find(a=>String(a.id)===d.a);if(x){x[d.k]=t.value;save();if(d.k==='status'||d.k==='follow')apps()}}});
 document.addEventListener('click',e=>{
  const t=e.target.closest('button');if(!t)return;const d=t.dataset;
  if(d.t)tab(d.t);
@@ -128,11 +137,12 @@ document.addEventListener('click',e=>{
  if(d.f){flt=d.f;apps()}
  if(d.adel&&confirm('Delete this application?')){S.apps=S.apps.filter(a=>String(a.id)!==d.adel);save();apps()}
  if(d.reuse){const x=S.apps.find(a=>String(a.id)===d.reuse);if(x){S.job={title:x.role,co:x.co,desc:x.desc||''};save();forms();tab(2)}}
+ if(d.js!==undefined){S.js.what=d.js;save();$('#jw').value=d.js;jobs()}
  if(d.ev!==undefined){const i=document.querySelector('[data-evi="'+d.ev+'"]'),v=i&&i.value.trim();if(v){if(!S.exp.length)S.exp.push({role:'',co:'',dates:'',bullets:''});S.exp[0].bullets=(S.exp[0].bullets?S.exp[0].bullets+'\n':'')+v;save();lists();gen()}}
  if(d.cal){const[id,k]=d.cal.split(':'),x=S.apps.find(a=>String(a.id)===id);if(x)out(ics(x,k))}
  if(d.m){mode=d.m;$$('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===mode));gen()}
 });
-function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();if(n==4)apps();window.scrollTo(0,0)}
+function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();if(n==4)apps();if(n==5)jobsOpen();window.scrollTo(0,0)}
 $('#go').onclick=()=>tab(3);
 $('#pr').onclick=()=>window.print();
 $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#doc').innerText);$('#cp').textContent='Copied'}catch(e){$('#cp').textContent='Select the text and copy manually'}setTimeout(()=>$('#cp').textContent='Copy text',1800)};
@@ -140,14 +150,17 @@ $('#clr').onclick=()=>{if(confirm('Clear all saved details and the job?')){S=bla
 const LB='tailor.lastBackup';
 function bkStatus(){let t='';try{t=localStorage.getItem(LB)||''}catch(e){}const el=$('#bkmsg');if(!t){el.textContent='No backup yet.';return}const d=new Date(+t),days=Math.floor((Date.now()-d)/864e5);el.textContent='Last backup: '+d.toLocaleDateString()+(days>=14?'. It has been a while, so back up again.':'.')}
 async function backup(){
- const name='tailor-backup-'+new Date().toISOString().slice(0,10)+'.json',f=new File([JSON.stringify(S,null,1)],name,{type:'application/json'});
- try{
-  if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'Tailor backup'});
-  else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
-  try{localStorage.setItem(LB,String(Date.now()))}catch(e){}bkStatus();
- }catch(e){if(e.name!=='AbortError')$('#bkmsg').textContent='Backup failed: '+(e.message||e)}
+ const name='tailor-backup-'+new Date().toISOString().slice(0,10)+'.json',f=new File([JSON.stringify(S,null,1)],name,{type:'application/json'}),m=$('#bkmsg');
+ const r=await out(f);
+ if(r==='cancelled'){m.textContent='Backup cancelled.';return}
+ if(r.startsWith('failed')){m.textContent='Backup failed ('+r.slice(7)+'). Use the copy option below.';return}
+ try{localStorage.setItem(LB,String(Date.now()))}catch(e){}
+ bkStatus();
+ if(r==='downloaded')m.textContent+=' Saved to your Downloads folder as '+name+'. Move it into iCloud Drive to keep it safe.';
 }
 $('#exp').onclick=backup;
+$('#bkcopy').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(S));$('#bkmsg').textContent='Backup text copied. Paste it into Notes or an email to yourself.'}catch(e){$('#bkmsg').textContent='Could not copy automatically.'}};
+$('#bkpaste').onclick=()=>{const t=prompt('Paste your backup text');if(!t)return;try{const d=JSON.parse(t);if(!d.p||!d.exp)throw 0;if((S.p.name||S.exp.some(e=>e.role))&&!confirm('Replace your current details with this backup?'))return;S=Object.assign(blank(),d);save();forms()}catch(x){alert('That text is not a Tailor backup.')}};
 $('#imp').onclick=()=>$('#file').click();
 $('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(!d.p||!d.exp)throw 0;if((S.p.name||S.exp.some(e=>e.role))&&!confirm('Replace your current details with this backup?'))return;S=Object.assign(blank(),d);save();forms()}catch(x){alert('That file is not a Tailor backup.')}})};
 $('#ex').onclick=()=>{S={p:{name:'Alex Morgan',title:'Operations Analyst',email:'alex@example.com',phone:'07700 900123',loc:'Manchester, UK',links:'linkedin.com/in/alexmorgan',summary:'',skills:'Excel, SQL, Power BI, stakeholder reporting, process improvement, Python, project coordination',extra:'Lean Six Sigma Green Belt. Languages: English, Spanish.'},exp:[{role:'Operations Analyst',co:'Northway Logistics',dates:'2022 to present',bullets:'Built Power BI dashboards that cut weekly reporting time by 6 hours\nReduced delivery errors 18% by redesigning the dispatch checklist\nWrote SQL queries to track on-time performance across 12 depots\nSupported team meetings and general admin'},{role:'Coordinator',co:'Brightside Retail',dates:'2019 to 2022',bullets:'Coordinated stock projects across 5 stores\nTrained 14 new starters on inventory systems'}],edu:[{deg:'BSc Business Management',school:'University of Salford',dates:'2016 to 2019'}],job:{title:'Senior Data Analyst',co:'Acme Freight',desc:'We need a Senior Data Analyst to own reporting and analytics for our operations team. You will build dashboards in Power BI and Tableau, write SQL daily, and present insights to stakeholders. 3+ years experience required. Python or R is a plus. Experience with process improvement and forecasting is desirable. Strong communication skills and ownership of projects.'}};save();forms()};
@@ -327,7 +340,7 @@ function apps(){
   <div><label>Status</label><select data-a="${a.id}" data-k="status" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit">${ST.map(s=>`<option${s===a.status?' selected':''}>${s}</option>`).join('')}</select></div>
   ${f('Date applied','date','date')}${f('Follow up on','follow','date')}${f('Interview date and time','int','datetime-local')}${f('Link to advert','url')}
   <div style="grid-column:1/-1"><label>Notes (contacts, salary, interview dates)</label><textarea data-a="${a.id}" data-k="notes">${esc(a.notes)}</textarea></div></div>
-  <div class="row">${a.prof?`<span class="chip">${esc(a.prof)}</span>`:''}${a.score!==''?`<span class="chip">Fit ${esc(a.score)}%</span>`:''}${isDue(a)?'<span class="chip m">Follow-up due</span>':''}${a.follow?`<button class="btn" data-cal="${a.id}:f">Follow-up to calendar</button>`:''}${a.int?`<button class="btn" data-cal="${a.id}:i">Interview to calendar</button>`:''}${a.desc?`<button class="btn" data-reuse="${a.id}">Reuse this job</button>`:''}<button class="btn" data-adel="${a.id}">Delete</button></div></div>`}).join('');
+  <div class="row">${a.prof?`<span class="chip">${esc(a.prof)}</span>`:''}${a.score!==''?`<span class="chip">Fit ${esc(a.score)}%</span>`:''}${isDue(a)?'<span class="chip m">Follow-up due</span>':''}${/^https?:/.test(a.url||'')?`<a class="btn" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open advert</a>`:''}${a.follow?`<button class="btn" data-cal="${a.id}:f">Follow-up to calendar</button>`:''}${a.int?`<button class="btn" data-cal="${a.id}:i">Interview to calendar</button>`:''}${a.desc?`<button class="btn" data-reuse="${a.id}">Reuse this job</button>`:''}<button class="btn" data-adel="${a.id}">Delete</button></div></div>`}).join('');
 }
 $('#aadd').onclick=()=>{newApp({status:'Saved',date:'',follow:''});flt='All';apps()};
 $('#logapp').onclick=()=>{const b=$('#logapp'),say=m=>{b.textContent=m;setTimeout(()=>b.textContent='Log this application',2000)};
@@ -337,14 +350,25 @@ $('#logapp').onclick=()=>{const b=$('#logapp'),say=m=>{b.textContent=m;setTimeou
 $('#acsv').onclick=async()=>{const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
  const rows=[['Role','Company','Status','Applied','Follow-up','Fit %','Link','Notes'],...S.apps.map(a=>[a.role,a.co,a.status,a.date,a.follow,a.score,a.url,a.notes])];
  const f=new File([rows.map(r=>r.map(q).join(',')).join('\n')],'applications.csv',{type:'text/csv'});
- try{if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f]});else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;a.click()}}catch(e){}};
+ out(f)};
 /* ---- Profiles, downloads, calendar ---- */
 const clone=o=>JSON.parse(JSON.stringify(o));
 function profUI(){$('#prof').innerHTML='<option value="-1">Working copy</option>'+S.profiles.map((x,i)=>`<option value="${i}"${i===S.pi?' selected':''}>${esc(x.n)}</option>`).join('');$('#pdel').hidden=S.pi<0}
 $('#prof').onchange=e=>{S.pi=+e.target.value;if(S.pi>=0){const x=S.profiles[S.pi];S.p=clone(x.p);S.exp=clone(x.exp);S.edu=clone(x.edu)}save();forms()};
 $('#pnew').onclick=()=>{const n=prompt('Name this profile, for example "Analyst roles"');if(!n)return;S.profiles.push({n,p:clone(S.p),exp:clone(S.exp),edu:clone(S.edu)});S.pi=S.profiles.length-1;save();profUI()};
 $('#pdel').onclick=()=>{if(S.pi>=0&&confirm('Delete this profile? Your current details stay as a working copy.')){S.profiles.splice(S.pi,1);S.pi=-1;save();profUI()}};
-async function out(f){try{if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f]});else{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}}catch(e){}}
+const isTouch=navigator.maxTouchPoints>1;
+async function out(f){
+ try{
+  if(isTouch&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return 'shared'}
+  if(window.showSaveFilePicker){
+   try{const ext=f.name.split('.').pop(),h=await showSaveFilePicker({suggestedName:f.name,types:[{description:ext.toUpperCase()+' file',accept:{[f.type||'application/octet-stream']:['.'+ext]}}]});const w=await h.createWritable();await w.write(f);await w.close();return 'saved'}
+   catch(e){if(e.name==='AbortError')return 'cancelled'}
+  }
+  const u=URL.createObjectURL(f),a=document.createElement('a');a.href=u;a.download=f.name;a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},60000);return 'downloaded';
+ }catch(e){return e.name==='AbortError'?'cancelled':'failed:'+(e.message||e)}
+}
 function docLines(){const o=[];[...$('#doc').children].forEach(n=>{
  if(n.tagName==='H3')o.push({t:n.innerText,s:'name'});
  else if(n.tagName==='H4')o.push({t:n.innerText,s:'h'});
@@ -357,8 +381,9 @@ async function docx(){
  const x=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
  const P=l=>{const b=['name','h','r'].includes(l.s),sz=l.s==='name'?36:l.s==='h'?24:21;return `<w:p><w:pPr><w:spacing w:before="${l.s==='h'?200:40}" w:after="40"/>${l.s==='b'?'<w:ind w:left="360" w:hanging="220"/>':''}</w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>${b?'<w:b/>':''}<w:sz w:val="${sz}"/></w:rPr><w:t xml:space="preserve">${l.s==='b'?'• ':''}${x(l.t)}</w:t></w:r></w:p>`};
  const z=new JSZip(),H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
- z.file('[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
- z.file('_rels/.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+ z.file('[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+ z.file('_rels/.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>');
+ z.file('docProps/core.xml',H+'<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>'+x(fname())+'</dc:title><dc:creator>'+x(S.p.name||'')+'</dc:creator></cp:coreProperties>');
  z.file('word/document.xml',H+'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+docLines().map(P).join('')+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="850" w:right="850" w:bottom="850" w:left="850" w:header="400" w:footer="400" w:gutter="0"/></w:sectPr></w:body></w:document>');
  return new File([await z.generateAsync({type:'blob'})],fname()+'.docx',{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
 }
@@ -370,6 +395,30 @@ function ics(a,k){
  const c=t=>String(t||'').replace(/[,;\n]/g,' ');
  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Tailor//EN','BEGIN:VEVENT','UID:'+String(a.id).replace(/\W/g,'')+k+'@tailor','DTSTAMP:'+new Date().toISOString().replace(/[-:]|\.\d+/g,''),'DTSTART:'+f(d0),'DTEND:'+f(d1),'SUMMARY:'+c(title),'DESCRIPTION:'+c(a.url),'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Reminder','TRIGGER:-PT'+al+'M','END:VALARM','END:VEVENT','END:VCALENDAR'];
  return new File([L.join('\r\n')],'tailor-'+(iv?'interview':'follow-up')+'.ics',{type:'text/calendar'});
+}
+/* ---- Job search links and branding ---- */
+function brand(){const n=(S.p.name||'').trim();$('h1').textContent=n?n+"'s Tailor":'Tailor';document.title=n?n+' | Tailor':'Tailor: CV and Resume Generator'}
+window.addEventListener('beforeprint',()=>{document.title=fname()});window.addEventListener('afterprint',brand);
+function jobsOpen(){const j=S.js;if(!j.what)j.what=S.job.title||S.p.title||'';if(!j.where)j.where=S.p.loc||'';save();$('#jw').value=j.what;$('#jl').value=j.where;$('#jd2').value=j.days;$('#jr').checked=!!j.remote;jobs()}
+$('#jr').onchange=e=>{S.js.remote=e.target.checked;save();jobs()};
+function jobs(){
+ const j=S.js,w=(j.what||'').trim(),l=(j.where||'').trim(),d=+j.days||7,e=encodeURIComponent,r=j.remote,q=r&&w?w+' remote':w;
+ const slug=t=>t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+ const gd={1:'today',3:'3days',7:'week',14:'month',30:'month'}[d],li={1:86400,3:259200,7:604800,14:1209600,30:2592000}[d],rd={1:'today',3:'lastthreedays',7:'lastweek',14:'lasttwoweeks',30:'lasttwoweeks'}[d];
+ const terms=[...new Set([S.p.title,S.job.title,...skills().slice(0,4).map(s=>(S.p.title?S.p.title+' ':'')+s)].map(x=>(x||'').trim()).filter(Boolean))];
+ $('#jsug').innerHTML=terms.length?'<span class="hint">Try: </span>'+terms.map(t=>`<button class="chip" data-js="${esc(t)}" style="border:0;cursor:pointer;font:inherit;font-size:13px">${esc(t)}</button>`).join(''):'';
+ if(!w){$('#jlinks').innerHTML='<p class="hint" style="grid-column:1/-1">Enter a job title or keywords to see search links.</p>';return}
+ const L=[
+  ['Google Jobs','Many boards in one list',`https://www.google.com/search?q=${e(q+' jobs '+l)}&ibp=htl;jobs&htichips=date_posted:${gd}&htischips=date_posted;${gd}`],
+  ['Google: employer career pages','Finds postings on company application systems',`https://www.google.com/search?q=${e('(site:boards.greenhouse.io OR site:jobs.lever.co OR site:jobs.ashbyhq.com OR site:myworkdayjobs.com) "'+w+'" '+l)}&tbs=qdr:${d<=1?'d':d<=7?'w':'m'}`],
+  ['DuckDuckGo','Plain web search for openings',`https://duckduckgo.com/?q=${e(q+' jobs '+l+' apply')}`],
+  ['Indeed UK','Large general board',`https://uk.indeed.com/jobs?q=${e(q)}&l=${e(l)}&fromage=${d>14?14:d}&sort=date`],
+  ['LinkedIn Jobs','Needs a free LinkedIn account',`https://www.linkedin.com/jobs/search/?keywords=${e(w)}&location=${e(l)}&f_TPR=r${li}&sortBy=DD${r?'&f_WT=2':''}`],
+  ['Reed','UK board',`https://www.reed.co.uk/jobs?keywords=${e(q)}&location=${e(l)}&dateCreatedOffSet=${rd}`],
+  ['Totaljobs','UK board',`https://www.totaljobs.com/jobs/${slug(w)||'jobs'}${l?'/in-'+slug(l):''}?postedwithin=${d}`],
+  ['CV-Library','UK board',`https://www.cv-library.co.uk/search-jobs?kw=${e(q)}&loc=${e(l)}&posted=${d}`],
+  ['Find a job (GOV.UK)','Official government listings',`https://findajob.dwp.gov.uk/search?q=${e(q)}&w=${e(l)}`]];
+ $('#jlinks').innerHTML=L.map(x=>`<a class="item" href="${esc(x[2])}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin:0"><b>${x[0]}</b><div class="hint">${x[1]}</div></a>`).join('');
 }
 forms();bkStatus();
 </script>

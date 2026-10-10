@@ -33,3 +33,5 @@ Replace `index.html` in the repo. If the old version sticks, change `V='tailor-v
 - Download Word (.docx) or plain text (.txt). Use plain text for application systems that mangle formatted files.
 - Applications tab: statuses, follow-up dates, interview times, notes, CSV export, and calendar reminders (.ics) that open in Calendar on iPhone and Mac.
 - Back up to Files or iCloud, which includes profiles and applications.
+- Your name appears in the app header, the PDF title, file names and the Word file properties.
+- Find jobs tab: one-tap searches on Google Jobs, employer career pages, DuckDuckGo, Indeed, LinkedIn, Reed, Totaljobs, CV-Library and GOV.UK Find a job, prefilled from your title, location and skills. Each opens in a new tab.
