@@ -58,6 +58,8 @@ ul.tips{margin:6px 0;padding-left:20px}
 #doc ul{margin:3px 0 0;padding-left:18px}
 #doc b.k{background:#e6f0fb}
 a.item:hover{border-color:var(--acc)}
+details.gd{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+details.gd p,details.gd li{margin:6px 0}
 #doc .q{font-weight:600;margin-top:8px}
 #doc .letter{white-space:pre-wrap;font-size:14px}
 @media(max-width:640px){#doc{padding:22px 16px}}
@@ -69,7 +71,8 @@ a.item:hover{border-color:var(--acc)}
 <button role="tab" data-t="2" aria-selected="false">2. The job</button>
 <button role="tab" data-t="3" aria-selected="false">3. Fit and documents</button>
 <button role="tab" data-t="4" aria-selected="false">4. Applications</button>
-<button role="tab" data-t="5" aria-selected="false">5. Find jobs</button></nav>
+<button role="tab" data-t="5" aria-selected="false">5. Find jobs</button>
+<button role="tab" data-t="6" aria-selected="false">6. Guide</button></nav>
 <main>
 <section class="panel on" id="p1">
 <div class="row np" style="margin:0 0 12px"><label for="prof" style="margin:0">Profile</label><select id="prof" style="padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit"></select><button class="btn" id="pnew">Save as new profile</button><button class="btn" id="pdel" hidden>Delete profile</button></div>
@@ -112,6 +115,7 @@ a.item:hover{border-color:var(--acc)}
 <p class="hint">Uses the title, place and date window above. Use in Tailor sends a result to the fit check. Applying still happens on the employer's site.</p>
 <div class="row"><label style="margin:0;display:flex;gap:6px;align-items:center;color:var(--ink)"><input type="checkbox" data-prov="adzuna" style="width:auto"> Adzuna (UK, needs free keys)</label><label style="margin:0;display:flex;gap:6px;align-items:center;color:var(--ink)"><input type="checkbox" data-prov="remotive" checked style="width:auto"> Remotive (remote)</label><label style="margin:0;display:flex;gap:6px;align-items:center;color:var(--ink)"><input type="checkbox" data-prov="arbeit" checked style="width:auto"> Arbeitnow (Europe)</label></div>
 <details style="margin-top:8px"><summary class="hint">Adzuna keys (free at developer.adzuna.com)</summary><div class="grid" style="margin-top:8px"><div><label for="akid">App ID</label><input id="akid" autocomplete="off"></div><div><label for="akey">App key</label><input id="akey" autocomplete="off"></div></div><p class="hint">Stored only on this device and not included in backups.</p></details>
+<div class="row"><label style="margin:0;display:flex;gap:6px;align-items:center;color:var(--ink)"><input type="checkbox" id="lsonly" checked style="width:auto"> Only roles that match mine</label><label style="margin:0;display:flex;gap:6px;align-items:center;color:var(--ink)"><input type="checkbox" id="lsalt" checked style="width:auto"> <span id="lsaltl">Also search my profile title</span></label></div>
 <div class="row"><button class="btn pri" id="lsearch">Search listings</button></div><p class="hint" id="lsmsg" role="status"></p><div id="lsres"></div>
 <h2>Apply faster: autofill bookmark</h2>
 <p class="hint">A bookmark that fills your details into an application page when you tap it. It cannot attach files, so you still upload your CV. Some sites block bookmarks like this, and forms inside embedded frames cannot be filled. The bookmark contains your personal details, so keep it private and make a new one after changing them.</p>
@@ -120,11 +124,43 @@ a.item:hover{border-color:var(--acc)}
 <p><b>Mac:</b> show your bookmarks bar (View, Show Favorites Bar), then drag this link onto it: <a id="bmlink" href="#" draggable="true" class="chip" style="text-decoration:none;font-size:14px">Tailor autofill</a></p>
 <p><b>iPhone:</b> tap Copy bookmark code. In Safari, open any page and tap Share, then Add Bookmark, name it Tailor autofill and save. Open Bookmarks, tap Edit, open that bookmark, replace its address with the pasted code, then tap Done. On an application page, open Bookmarks and tap it.</p>
 <textarea id="bmcode" readonly style="min-height:60px;font-size:12px"></textarea><div class="row"><button class="btn" id="bmcopy">Copy bookmark code</button></div></div></section>
+<section class="panel" id="p6"><h2>Guide and coach</h2>
+<p class="hint">Answer the questions below to strengthen your details. Anything you add updates your CV in step 1 and works for any role.</p>
+<h2>1. CV health check</h2><div id="gh"></div>
+<h2>2. Tailoring plan for the job in step 2</h2><div id="gt"></div>
+<h2>3. Draft your summary</h2>
+<p class="hint">Answer these four questions and Tailor drafts a summary you can edit. It leaves out anything you did not say.</p>
+<div class="grid"><div><label for="gdr">What role are you aiming for?</label><input id="gdr" data-g="gd" data-k="role"></div><div><label for="gdy">How many years of relevant experience?</label><input id="gdy" data-g="gd" data-k="years" inputmode="decimal"></div>
+<div style="grid-column:1/-1"><label for="gds">Your top three strengths, separated by commas</label><input id="gds" data-g="gd" data-k="strengths" placeholder="e.g. SQL reporting, process improvement, stakeholder management"></div>
+<div style="grid-column:1/-1"><label for="gdp">One achievement you are proud of, with a number</label><input id="gdp" data-g="gd" data-k="proud" placeholder="e.g. Cut weekly reporting time by 6 hours with Power BI dashboards"></div></div>
+<div class="row"><button class="btn pri" id="gsdraft">Draft my summary</button><button class="btn" id="gsuse">Use as my summary</button><button class="btn" id="gsk">Add strengths to my skills</button></div>
+<textarea id="gsum" style="margin-top:8px" aria-label="Draft summary"></textarea><p class="hint" id="gsmsg" role="status"></p>
+<h2>4. Achievement builder</h2>
+<p class="hint">Good achievements follow: action verb, what you did, how, and the result. Answer each box, check the preview, then add it to a role.</p>
+<div class="row" style="margin:0 0 8px"><label for="abrole" style="margin:0">Add to</label><select id="abrole" style="padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit"></select></div>
+<div id="abverbs" style="margin-bottom:8px"></div>
+<div class="grid"><div><label for="abv">Action verb</label><input id="abv" placeholder="Built, Led, Reduced..."></div><div><label for="abw">What did you do?</label><input id="abw" placeholder="weekly sales dashboards"></div>
+<div><label for="abt">With what tools or method? (optional)</label><input id="abt" placeholder="Power BI and SQL"></div><div><label for="abr">What changed? Use a number if true</label><input id="abr" placeholder="cutting reporting time by 6 hours"></div>
+<div style="grid-column:1/-1"><label for="abs">Scale or timeframe (optional)</label><input id="abs" placeholder="across 12 depots, weekly"></div>
+<div style="grid-column:1/-1"><label for="abp">Preview (you can edit it)</label><textarea id="abp" style="min-height:60px"></textarea></div></div>
+<div class="row"><button class="btn pri" id="abadd">Add to my experience</button></div><p class="hint" id="abmsg" role="status"></p>
+<h2>5. Questions from the job advert</h2><div id="gq"></div>
+<h2>6. Saved answers for application forms</h2>
+<p class="hint">Answers you give often. They stay on this device, travel in your backup, and appear in the Apply kit for one-tap copy.</p>
+<div class="grid" id="ga"></div>
+<h2>7. Guides</h2>
+<details class="gd"><summary><b>Tailor a CV to any role in 10 minutes</b></summary><ol><li>Paste the advert in step 2 and read the fit check.</li><li>Pick the 5 to 8 phrases the advert repeats. Those are its keywords.</li><li>Use them where they are true: headline, summary, skills and two or three achievements.</li><li>Lead each role with the achievements closest to the advert. Resume mode does this for you.</li><li>Answer the gap questions in section 5 honestly. If you have nothing, leave it out and address it in the cover letter.</li><li>Write the why this company sentence in the Apply kit.</li><li>Download it, read it as plain text, then apply.</li></ol></details>
+<details class="gd"><summary><b>Write strong achievements</b></summary><p>Formula: action verb + what you did + how + the result.</p><p>Weak: "Responsible for weekly reports."<br>Stronger: "Built a weekly Power BI report for 12 depot managers, cutting preparation time by 6 hours." Only use numbers that are true. If you do not know the exact figure, give an honest range or say "around".</p><p>No result yet? Say the scale: how many people, customers, records, sites or how often.</p></details>
+<details class="gd"><summary><b>Summary formula</b></summary><p>[Job title] with [years] of experience in [three strengths]. [One proof point with a number]. [Optional: what you want next]. Keep it to two or three sentences, about 25 to 70 words, and change the strengths to match each advert.</p></details>
+<details class="gd"><summary><b>UK CV rules and ATS tips</b></summary><ul><li>Reverse chronological order, newest first. Usually two pages at most.</li><li>Leave out a photo, date of birth and marital status. Town or city is enough, no full address.</li><li>Plain headings: Profile, Experience, Education, Skills. Avoid tables, columns, text boxes and icons, which applicant tracking systems can misread.</li><li>Send a PDF unless the employer asks for Word. Name it like "Your Name - CV".</li><li>Use the advert's own wording where it is true, and keep date formats consistent.</li><li>Keep a master CV with everything, then tailor a copy per role.</li></ul></details>
+<details class="gd"><summary><b>Career change, gaps or little experience</b></summary><ul><li>Lead with a summary that explains your direction in one line.</li><li>Put transferable skills, projects, volunteering and courses where experience would go.</li><li>Explain a gap in one honest line, for example a career break or study. Years alone are fine instead of months.</li><li>Use the advert questions in section 5 to find evidence you may have overlooked.</li></ul></details>
+<details class="gd"><summary><b>Keep your CV current: questions to ask every three months</b></summary><ul><li>What did I finish, launch or improve?</li><li>What did I save: time, money or errors?</li><li>How many people, customers or records did I handle?</li><li>What new tools or methods did I learn?</li><li>Did I get praise, an award or extra responsibility?</li><li>Has my title, scope or team changed?</li></ul><p>Add each answer with the achievement builder.</p></details>
+<details class="gd"><summary><b>Before you apply checklist</b></summary><ul><li>The advert is still open and you meet the must-haves.</li><li>The company name and role are correct in the cover letter.</li><li>Your contact details and links are right.</li><li>Numbers and dates match across your CV and cover letter.</li><li>The file is named properly and opens cleanly.</li><li>A follow-up date is set in Applications.</li></ul></details></section>
 </main>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const KEY='tailor.v1';
-const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:'',url:'',why:''},apps:[],profiles:[],pi:-1,js:{what:'',where:'',days:'7',remote:false}});
+const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:'',url:'',why:''},apps:[],profiles:[],pi:-1,js:{what:'',where:'',days:'7',remote:false},ans:{},gd:{}});
 let S=blank(),mode='resume';
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r))}catch(e){}
 const save=()=>{try{if(S.profiles&&S.profiles[S.pi])Object.assign(S.profiles[S.pi],JSON.parse(JSON.stringify({p:S.p,exp:S.exp,edu:S.edu})));localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -156,7 +192,7 @@ document.addEventListener('click',e=>{
  if(d.cal){const[id,k]=d.cal.split(':'),x=S.apps.find(a=>String(a.id)===id);if(x)out(ics(x,k))}
  if(d.m){mode=d.m;$$('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===mode));gen()}
 });
-function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();if(n==4)apps();if(n==5)jobsOpen();window.scrollTo(0,0)}
+function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();if(n==4)apps();if(n==5)jobsOpen();if(n==6)guideOpen();window.scrollTo(0,0)}
 $('#go').onclick=()=>tab(3);
 $('#pr').onclick=()=>window.print();
 $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#doc').innerText);$('#cp').textContent='Copied'}catch(e){$('#cp').textContent='Select the text and copy manually'}setTimeout(()=>$('#cp').textContent='Copy text',1800)};
@@ -442,9 +478,9 @@ function letterText(){
  const e=S.exp[0]||{},best=lines(e.bullets).sort((x,y)=>rank(y)-rank(x))[0],m=a.matched.filter(k=>!/^\d/.test(k)).slice(0,3),why=(S.job.why||'').trim();
  return `${p.name||'Your name'}\n${[p.email,p.phone].filter(Boolean).join(' | ')}\n\nDear ${S.job.co?'Hiring Team at '+S.job.co:'Hiring Team'},\n\nI am writing to apply for the ${S.job.title||'[role]'} position${S.job.co?' at '+S.job.co:''}. ${summary}\n\n${m.length?`The advert emphasises ${m.join(', ')}, which is where my background is strongest. `:''}${e.role?`In my role as ${e.role}${e.co?' at '+e.co:''}, `:''}${best?best.charAt(0).toLowerCase()+best.slice(1).replace(/\.$/,'')+'.':'[add your strongest relevant achievement].'}\n\n${why||'[Add one sentence on why this company and this role.]'}\n\nI would welcome the chance to discuss how I can contribute. Thank you for your time.\n\nKind regards,\n${p.name||'Your name'}`;
 }
-function kitVals(){const p=S.p,e=S.exp[0]||{};return{name:p.name,email:p.email,phone:p.phone,loc:p.loc,links:p.links,title:p.title,emp:e.co||'',summary:p.summary.trim()||'',skills:p.skills,letter:letterText()}}
+function kitVals(){const p=S.p,e=S.exp[0]||{};return{name:p.name,email:p.email,phone:p.phone,loc:p.loc,links:p.links,title:p.title,emp:e.co||'',summary:p.summary.trim()||'',skills:p.skills,letter:letterText(),...(S.ans||{})}}
 function kit(){
- const v=kitVals(),L=[['name','Full name'],['email','Email'],['phone','Phone'],['loc','Location'],['links','Links'],['title','Professional title'],['emp','Current or latest employer'],['summary','Summary'],['skills','Skills'],['letter','Cover letter']];
+ const v=kitVals(),L=[['name','Full name'],['email','Email'],['phone','Phone'],['loc','Location'],['links','Links'],['title','Professional title'],['emp','Current or latest employer'],['summary','Summary'],['skills','Skills'],['letter','Cover letter'],...ANSF.filter(x=>S.ans&&S.ans[x[0]])];
  const warn=[],a=analyse();
  if(!S.job.title&&!S.job.co)warn.push('Add the job title and company in step 2.');
  if(!S.p.email||!S.p.phone)warn.push('Your email or phone is missing.');
@@ -477,7 +513,7 @@ document.addEventListener('click',e=>{
 const KK='tailor.keys';
 const getKeys=()=>{try{return JSON.parse(localStorage.getItem(KK))||{}}catch(e){return{}}};
 const putKeys=o=>{try{localStorage.setItem(KK,JSON.stringify(o))}catch(e){}};
-function lsInit(){const k=getKeys();$('#akid').value=k.aid||'';$('#akey').value=k.akey||'';const a=$('[data-prov="adzuna"]');if(a)a.checked=!!(k.aid&&k.akey)}
+function lsInit(){const k=getKeys();$('#akid').value=k.aid||'';$('#akey').value=k.akey||'';const a=$('[data-prov="adzuna"]');if(a)a.checked=!!(k.aid&&k.akey);$('#lsonly').checked=S.js.onlyfit!==false;$('#lsalt').checked=S.js.alt!==false;$('#lsaltl').textContent=S.p.title?'Also search my profile title ('+S.p.title+')':'Also search my profile title'}
 $('#akid').onchange=$('#akey').onchange=()=>{putKeys({aid:$('#akid').value.trim(),akey:$('#akey').value.trim()});lsInit()};
 async function fetchJ(u){const c=new AbortController(),t=setTimeout(()=>c.abort(),12000);try{const r=await fetch(u,{signal:c.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json()}finally{clearTimeout(t)}}
 const strip=h=>{try{const t=String(h||'').replace(/<\/(p|li|div|h\d|ul|ol)>|<br\s*\/?>/gi,'\n');const x=new DOMParser().parseFromString(t,'text/html').body.textContent||'';return x.replace(/[ \t]+/g,' ').replace(/\n\s*\n+/g,'\n').trim()}catch(e){return String(h||'')}};
@@ -491,22 +527,40 @@ const PROV={
  arbeit:{n:'Arbeitnow',run:async(q)=>{const j=await fetchJ('https://www.arbeitnow.com/api/job-board-api'),w=terms(q);
   return(j.data||[]).map(r=>({title:r.title,co:r.company_name,loc:(r.location||'')+(r.remote?' (remote)':''),desc:strip(r.description),url:r.url,date:r.created_at?new Date(r.created_at*1000).toISOString():'',src:'Arbeitnow',full:true,_t:((r.title||'')+' '+(r.tags||[]).join(' ')).toLowerCase()})).filter(r=>!w.length||w.some(x=>r._t.includes(x)))}}
 };
-let RES=[];
+let RES=[],ALL=[],BAD=[];
+const LVW=/\b(senior|sr|lead|principal|head|director|manager|junior|jr|graduate|intern|internship|trainee|entry)\b/i;
+const lvl=t=>{const m=String(t||'').toLowerCase().match(LVW);if(!m)return'';return/senior|sr|lead|principal|head|director|manager/.test(m[1])?'senior':'junior'};
+const stm=w=>norm(w),sig=t=>terms(t).map(stm).sort().join();
+function roleInfo(r,q){
+ const tt=new Set(terms(r.title).map(stm)),qt=terms(q),mt=terms(S.p.title||'');
+ const tm=qt.length?qt.filter(w=>tt.has(stm(w))).length/qt.length:.5,my=mt.length?mt.filter(w=>tt.has(stm(w))).length/mt.length:0;
+ const rel=Math.max(tm,.85*my),want=lvl(q)||lvl(S.p.title),got=lvl(r.title);
+ return{rel,label:rel>=.6?'Strong':rel>=.3?'Partial':'Weak',off:!!(want&&got&&want!==got)}}
 async function listSearch(){
  const q=(S.js.what||'').trim(),l=(S.js.where||'').trim(),d=+S.js.days||7,m=$('#lsmsg'),on=$$('[data-prov]').filter(c=>c.checked).map(c=>c.dataset.prov);
  if(!q){m.textContent='Enter a job title or keywords above first.';return}
  if(!on.length){m.textContent='Tick at least one source.';return}
  m.textContent='Searching...';$('#lsres').innerHTML='';
- const out=await Promise.allSettled(on.map(p=>PROV[p].run(q+(p==='adzuna'&&S.js.remote?' remote':''),l,d)));
- let all=[],bad=[];
- out.forEach((o,i)=>{if(o.status==='fulfilled')all=all.concat(o.value);else{const r=o.reason||{};bad.push(PROV[on[i]].n+': '+(r.name==='AbortError'?'timed out':r instanceof TypeError?'could not be reached (the site may block in-browser access, or you are offline)':r.message||'failed'))}});
- const seen=new Set();
- all=all.filter(r=>{if(!r.title||!/^https?:\/\//i.test(r.url||''))return false;const a=ageDays(r.date);if(a!==null&&a>d)return false;if(seen.has(r.url))return false;seen.add(r.url);return true});
- all.forEach(r=>r.fit=analyse(r.title+' '+r.desc).score);
- all.sort((a,b)=>b.fit-a.fit);RES=all.slice(0,40);
- m.textContent=(RES.length?RES.length+' result'+(RES.length>1?'s':'')+', best fit first.':'No results.')+(bad.length?' '+bad.join('. ')+'.':'');
- $('#lsres').innerHTML=RES.map((r,i)=>`<div class="item"><b>${esc(r.title)}</b>${r.co?' at '+esc(r.co):''}<div class="hint">${esc(r.loc)}${r.date?' | '+esc(String(r.date).slice(0,10)):''} | ${esc(r.src)}</div><div style="margin:4px 0"><span class="chip${r.fit<45?' m':''}">Fit ${r.fit}%${r.full?'':' (preview only)'}</span></div><div class="hint">${esc(r.desc.replace(/\s+/g,' ').slice(0,180))}</div><div class="row"><button class="btn pri" data-use="${i}">Use in Tailor</button><button class="btn" data-save="${i}">Save to tracker</button><a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open advert</a></div></div>`).join('');
+ const qs=[q],alt=(S.p.title||'').trim();if(S.js.alt!==false&&alt&&sig(alt)!==sig(q))qs.push(alt);
+ const jobs=[];on.forEach(p=>qs.forEach(x=>jobs.push([p,x])));
+ const out=await Promise.allSettled(jobs.map(([p,x])=>PROV[p].run(x+(p==='adzuna'&&S.js.remote?' remote':''),l,d)));
+ let all=[];BAD=[];
+ out.forEach((o,i)=>{if(o.status==='fulfilled')all=all.concat(o.value);else{const r=o.reason||{},t=PROV[jobs[i][0]].n+': '+(r.name==='AbortError'?'timed out':r instanceof TypeError?'could not be reached (the site may block in-browser access, or you are offline)':r.message||'failed');if(!BAD.includes(t))BAD.push(t)}});
+ const seen=new Set(),pw=terms(l),away=/remote|worldwide|anywhere|global|europe|emea|\buk\b|united kingdom|work from home/i;
+ all=all.filter(r=>{if(!r.title||!/^https?:\/\//i.test(r.url||''))return false;const a=ageDays(r.date);if(a!==null&&a>d)return false;
+  if(r.src!=='Adzuna'){const lc=String(r.loc||'').toLowerCase();if(S.js.remote&&!(r.src==='Remotive'||/remote/.test(lc)))return false;if(l&&!away.test(lc)&&!pw.some(w=>lc.includes(w)))return false}
+  if(seen.has(r.url))return false;seen.add(r.url);return true});
+ all.forEach(r=>{r.fit=analyse(r.title+' '+r.desc).score;const i=roleInfo(r,q);r.rel=i.rel;r.label=i.label;r.off=i.off;r.score=i.rel*60+r.fit*.4-(i.off?15:0)});
+ all.sort((a,b)=>b.score-a.score);ALL=all;lsRender();
 }
+function lsRender(){
+ const m=$('#lsmsg'),only=S.js.onlyfit!==false,vis=only?ALL.filter(r=>r.rel>=.3):ALL,hid=ALL.length-vis.length;RES=vis.slice(0,40);
+ m.textContent=(RES.length?RES.length+' result'+(RES.length>1?'s':'')+', best role match first.':'No results'+(hid?' that match your role.':'.'))+(hid?' '+hid+' hidden as a weak role match.':'')+(BAD.length?' '+BAD.join('. ')+'.':'');
+ $('#lsres').innerHTML=(hid?`<div class="row" style="margin:0 0 8px"><button class="btn" id="lsall">Show the ${hid} hidden</button></div>`:'')+RES.map((r,i)=>`<div class="item"><b>${esc(r.title)}</b>${r.co?' at '+esc(r.co):''}<div class="hint">${esc(r.loc)}${r.date?' | '+esc(String(r.date).slice(0,10)):''} | ${esc(r.src)}</div><div style="margin:4px 0"><span class="chip${r.label==='Strong'?'':' m'}">Role match: ${r.label}</span><span class="chip${r.fit<45?' m':''}">Fit ${r.fit}%${r.full?'':' (preview only)'}</span>${r.off?'<span class="chip m">Level differs</span>':''}</div><div class="hint">${esc(r.desc.replace(/\s+/g,' ').slice(0,180))}</div><div class="row"><button class="btn pri" data-use="${i}">Use in Tailor</button><button class="btn" data-save="${i}">Save to tracker</button><a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open advert</a></div></div>`).join('');
+}
+document.addEventListener('click',e=>{if(e.target.closest('#lsall')){S.js.onlyfit=false;save();$('#lsonly').checked=false;lsRender()}});
+$('#lsonly').onchange=e=>{S.js.onlyfit=e.target.checked;save();if(ALL.length)lsRender()};
+$('#lsalt').onchange=e=>{S.js.alt=e.target.checked;save()};
 $('#lsearch').onclick=listSearch;
 document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
  if(d.use!==undefined){const r=RES[+d.use];if(r){S.job={title:r.title,co:r.co,url:r.url,why:'',desc:r.desc+(r.full?'':'\n\n[Only a short preview was available from the job board. Open the advert and paste the full text here for an accurate fit check.]')};save();forms();tab(2)}}
@@ -563,6 +617,79 @@ async function shareFiles(){
  catch(e){if(e.name!=='AbortError')m.textContent='Could not share ('+(e.message||e)+').'}
 }
 document.addEventListener('click',e=>{if(e.target.closest('#kshare'))shareFiles()});
+/* ---- Guide and coach ---- */
+const WEAK=/^(responsible for|duties (included|include)|helped|helping|assisted|worked on|involved in|tasked with|in charge of|participated in)\b/i;
+const BUZZ=/\b(hard[- ]?working|team player|results[- ]driven|dynamic|go[- ]getter|self[- ]starter|detail[- ]oriented|passionate|synergy|think(ing)? outside the box|motivated individual)\b/gi;
+const ANSF=[['notice','Notice period'],['start','Earliest start date'],['salary','Salary expectation'],['rtw','Right to work in the UK'],['reloc','Willing to relocate or commute'],['refs','References']];
+const VERBS=['Built','Led','Reduced','Increased','Improved','Launched','Delivered','Automated','Designed','Negotiated','Trained','Streamlined','Analysed','Coordinated','Managed','Created','Resolved','Implemented'];
+const wc=t=>String(t||'').trim().split(/\s+/).filter(Boolean).length;
+function health(){
+ const p=S.p,B=S.exp.flatMap(e=>lines(e.bullets)),R=S.exp.filter(e=>e.role||e.co),I=[],add=(label,pts,max,tip)=>I.push({label,pts,max,tip:tip||''});
+ const cm=[['name',p.name],['email',p.email],['phone',p.phone]],cOK=cm.filter(x=>x[1]&&x[1].trim()).length;add('Contact details',Math.round(10*cOK/3),10,cOK<3?'Add your '+cm.filter(x=>!(x[1]&&x[1].trim())).map(x=>x[0]).join(', ')+'.':'');
+ const lk=[p.loc,p.links].filter(x=>x&&x.trim()).length;add('Location and links',Math.round(5*lk/2),5,lk<2?'Add your town or city and a LinkedIn or portfolio link.':'');
+ add('Professional title',p.title.trim()?5:0,5,'Add a title that matches the roles you want, such as "Operations Analyst".');
+ const sw=wc(p.summary);add('Summary',!sw?0:(sw>=25&&sw<=70)?10:5,10,!sw?'Write a 2 to 3 sentence summary. Use the summary helper below.':sw<25?'Your summary is short ('+sw+' words). Aim for 25 to 70.':'Your summary is long ('+sw+' words). Aim for 25 to 70.');
+ const sk=skills().length;add('Skills',(sk>=8&&sk<=20)?10:sk>=4?6:sk>0?3:0,10,sk>20?'You list '+sk+'. Trim to the 20 most relevant.':'You list '+sk+'. Aim for 8 to 20 that you can back up.');
+ add('Experience entries',R.length&&R.every(e=>e.dates&&e.dates.trim())?10:R.length?6:0,10,!R.length?'Add at least one role.':'Some roles have no dates.');
+ const few=R.filter(e=>lines(e.bullets).length<3);add('Achievements per role',R.length?Math.round(10*(R.length-few.length)/R.length):0,10,R.length?'Add at least 3 achievements to: '+few.map(e=>e.role||e.co).join(', ')+'.':'Add a role first.');
+ const nb=B.filter(b=>/\d/.test(b)).length,rt=B.length?nb/B.length:0;add('Numbers in achievements',rt>=.4?10:Math.round(10*rt/.4),10,'Only '+Math.round(rt*100)+'% of bullets contain a number. Aim for 40% or more. Add counts, percentages, time or money where true.');
+ const weak=B.filter(b=>WEAK.test(b));add('Strong openers',B.length?Math.max(0,10-weak.length*3):0,10,weak.length?'Rewrite openers like: '+weak.slice(0,3).map(b=>'"'+b.slice(0,50)+'"').join('; ')+'. Start with a verb such as Built, Led, Reduced or Delivered.':'Add achievements first.');
+ const ln=B.filter(b=>{const n=wc(b);return n>=6&&n<=28}).length;add('Bullet length',B.length?Math.round(5*ln/B.length):0,5,B.length?(B.length-ln)+' bullet(s) are very short or very long. Aim for 6 to 28 words.':'Add achievements first.');
+ const bz=([p.summary,...B].join(' ').match(BUZZ)||[]);add('Plain, specific wording',Math.max(0,5-bz.length*2),5,'Replace vague phrases ('+[...new Set(bz.map(x=>x.toLowerCase()))].join(', ')+') with evidence.');
+ add('Education',S.edu.some(e=>(e.deg&&e.deg.trim())||(e.school&&e.school.trim()))?5:0,5,'Add your education or training.');
+ if(S.job.desc.trim()){const a=analyse();add('Match to the job in step 2',Math.min(5,Math.round(5*a.score/70)),5,'Keyword match is '+a.score+'%. See the tailoring plan below.')}
+ const tot=I.reduce((s,x)=>s+x.pts,0),mx=I.reduce((s,x)=>s+x.max,0);return{score:Math.round(100*tot/mx),I};
+}
+function gHealth(){const h=health(),todo=h.I.filter(x=>x.pts<x.max).sort((a,b)=>(b.max-b.pts)-(a.max-a.pts)),good=h.I.filter(x=>x.pts>=x.max);
+ $('#gh').innerHTML=`<div class="score"><b>${h.score}</b><div class="bar" role="img" aria-label="CV health ${h.score} out of 100"><i style="width:${h.score}%"></i></div></div><p class="hint">${h.score>=85?'Strong. Tailor it to each role.':h.score>=65?'Good base. Fix the items below first.':'Needs work. Start with the first items below.'}</p>`
+ +(todo.length?`<p><b>To improve</b></p><ul class="tips">${todo.map(x=>`<li><b>${esc(x.label)}</b> (${x.pts}/${x.max}). ${esc(x.tip)}</li>`).join('')}</ul>`:'')
+ +(good.length?`<p><b>Looking good</b><br>${good.map(x=>`<span class="chip">${esc(x.label)}</span>`).join('')}</p>`:'')+'<div class="row"><button class="btn" id="grefresh">Re-check</button></div>'}
+function gTailor(){const el=$('#gt');
+ if(!S.job.desc.trim()&&!S.job.title){el.innerHTML='<p class="hint">Add a job in step 2 and this becomes a step by step plan for it.</p>';return}
+ const a=analyse(),top=a.matched.filter(k=>!/^\d/.test(k)).slice(0,5),sm=(S.p.summary||'').toLowerCase(),sks=S.p.skills.toLowerCase(),B=S.exp.flatMap(e=>lines(e.bullets));
+ const tj=terms(S.job.title).map(norm),I=[
+  [!S.job.title||terms(S.p.title).some(w=>tj.includes(norm(w))),'Headline bridges to the job title','Your title and the advert share no words. If it is honest, use a headline such as "'+(S.p.title||'Your title')+' | '+(S.job.title||'target role')+'".'],
+  [!top.length||top.filter(k=>sm.includes(k)).length>=Math.min(2,top.length),'Summary uses the advert\'s key terms','Work these into your summary where true: '+top.join(', ')+'. Use the summary helper below.'],
+  [!top.length||top.filter(k=>sks.includes(k)).length>=Math.min(4,top.length),'Skills list includes the matched terms','Add the ones you really have to your skills: '+top.join(', ')+'.'],
+  [B.filter(b=>top.some(k=>b.toLowerCase().includes(k))).length>=2||!top.length,'At least two achievements prove those terms','Write achievements that show '+top.slice(0,3).join(', ')+' in action. Use the achievement builder.'],
+  [a.missing.length<=2,'Gaps are covered or acknowledged','Missing from your details: '+a.missing.slice(0,6).join(', ')+'. Answer the advert questions below, or leave them out and address them in the cover letter.'],
+  [!!(S.job.why||'').trim(),'"Why this company" sentence written','Add one specific sentence in the Apply kit on the Fit and documents tab.'],
+  [!!S.job.url,'Advert link saved','Add the link in step 2 so you can reopen it and the tracker keeps it.']];
+ if(a.yrs)I.push([false,'Check the experience requirement','The advert asks for '+a.yrs+'+ years. Make sure your dates show it, or lead with your strongest relevant stretch.']);
+ el.innerHTML='<p class="hint">For: <b>'+esc(S.job.title||'the job in step 2')+(S.job.co?' at '+esc(S.job.co):'')+'</b></p><ul class="tips" style="list-style:none;padding-left:0">'+I.map(x=>`<li style="margin:6px 0"><span class="chip${x[0]?'':' m'}">${x[0]?'Done':'To do'}</span> <b>${esc(x[1])}</b>${x[0]?'':'<div class="hint">'+esc(x[2])+'</div>'}</li>`).join('')+'</ul>'}
+function draftSummary(){const g=S.gd||{},a=analyse(),top=a.matched.filter(k=>!/^\d/.test(k)).slice(0,3),cap=x=>x.charAt(0).toUpperCase()+x.slice(1);
+ const role=(g.role||S.job.title||S.p.title||S.js.what||'Professional').trim(),yrs=(g.years||'').trim(),n=parseFloat(yrs);
+ const st=(g.strengths||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean),use=(st.length?st:(S.job.desc.trim()?top:skills())).slice(0,3),lst=x=>x.length<2?x.join(''):x.slice(0,-1).join(', ')+' and '+x[x.length-1];
+ let t=cap(role)+(yrs&&!isNaN(n)?' with '+(n===1?'1 year':n+' years')+' of experience':' with experience')+(use.length?' in '+lst(use):'')+'.';
+ const pr=(g.proud||'').trim().replace(/[.\s]+$/,'');if(pr)t+=' '+cap(pr)+'.';return t}
+function abBuild(){const v=id=>$('#'+id).value.trim(),verb=v('abv'),w=v('abw'),t=v('abt'),r=v('abr'),s=v('abs');if(!verb&&!w)return'';let b=[verb,w].filter(Boolean).join(' ');if(t)b+=' using '+t;if(r)b+=', '+r.replace(/^,?\s*/,'');if(s)b+=' ('+s+')';return b.charAt(0).toUpperCase()+b.slice(1)}
+function abPrev(){$('#abp').value=abBuild()}
+function roleOpts(){return S.exp.map((e,i)=>`<option value="${i}">${esc(e.role||'Role '+(i+1))}${e.co?', '+esc(e.co):''}</option>`).join('')||'<option value="-1">Add a role in step 1 first</option>'}
+function addBullet(i,v){S.exp[i].bullets=(S.exp[i].bullets?S.exp[i].bullets+'\n':'')+v;save();lists()}
+function reqLines(){const t=S.job.desc||'';return[...new Set(t.split(/\n|[.;!?]\s+/).map(x=>x.replace(/^[-•*\d.)\s]+/,'').trim()).filter(x=>x.length>=20&&x.length<=170&&/(experience|ability|able to|knowledge|proficien|skilled|familiar|must|required|responsib|you will|manage|lead|build|develop|design|deliver|stakeholder)/i.test(x)))].slice(0,6)}
+function gReq(){const el=$('#gq'),R=reqLines();
+ if(!R.length){el.innerHTML='<p class="hint">Paste a job description in step 2 and this turns its requirements into questions.</p>';return}
+ const all=[S.p.title,S.p.summary,S.p.skills,S.p.extra,...S.exp.map(e=>e.role+' '+e.bullets),...S.edu.map(e=>e.deg)].join(' '),have=new Set(terms(all).map(norm));
+ el.innerHTML='<p class="hint">For each requirement, say what you have really done. One true line becomes an achievement on the role you choose.</p><div class="row" style="margin:0 0 8px"><label for="greqrole" style="margin:0">Add answers to</label><select id="greqrole" style="padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit">'+roleOpts()+'</select></div>'
+ +R.map((q,i)=>{const kt=terms(q).filter(w=>w.length>3),cov=kt.length?kt.filter(w=>have.has(norm(w))).length/kt.length:0;return`<div class="item"><div>${esc(q)}</div><div style="margin:4px 0"><span class="chip${cov>=.5?'':' m'}">${cov>=.5?'Looks covered':'Possible gap'}</span></div><div class="row" style="margin:6px 0 0"><input data-greq="${i}" placeholder="What have you done that relates? Add a number if true." style="flex:1;min-width:200px"><button class="btn" data-greqadd="${i}">Add as achievement</button></div></div>`}).join('')}
+function gAns(){S.ans=S.ans||{};$('#ga').innerHTML=ANSF.map(([k,l])=>`<div><label>${l}</label><div class="row" style="margin:0"><input data-g="ans" data-k="${k}" value="${esc(S.ans[k]||'')}" style="flex:1"><button class="btn" data-gcp="${k}">Copy</button></div></div>`).join('')}
+function guideOpen(){S.gd=S.gd||{};S.ans=S.ans||{};
+ [['gdr','role'],['gdy','years'],['gds','strengths'],['gdp','proud']].forEach(([id,k])=>{$('#'+id).value=S.gd[k]||''});
+ if(!S.gd.role)$('#gdr').placeholder=S.job.title||S.js.what||S.p.title||'e.g. Operations Analyst';
+ $('#abrole').innerHTML=roleOpts();$('#abv').value='';$('#abw').value='';$('#abt').value='';$('#abr').value='';$('#abs').value='';abPrev();
+ $('#abverbs').innerHTML=VERBS.map(v=>`<button class="chip" data-abverb="${v}" style="border:0;cursor:pointer;font:inherit;font-size:13px">${v}</button>`).join('');
+ gHealth();gTailor();gReq();gAns()}
+['abv','abw','abt','abr','abs'].forEach(id=>$('#'+id).addEventListener('input',abPrev));
+$('#gsdraft').onclick=()=>{$('#gsum').value=draftSummary();$('#gsmsg').textContent=''};
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+ if(t.id==='grefresh'){gHealth();gTailor()}
+ if(t.id==='gsuse'){const v=$('#gsum').value.trim();if(!v){$('#gsmsg').textContent='Draft a summary first.';return}S.p.summary=v;save();forms();$('#gsmsg').textContent='Saved as your summary. Edit it in step 1 any time.';gHealth();gTailor()}
+ if(t.id==='gsk'){const add=(S.gd.strengths||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean),cur=skills(),low=new Set(cur.map(x=>x.toLowerCase())),n=add.filter(x=>!low.has(x.toLowerCase()));if(!n.length){$('#gsmsg').textContent='Nothing new to add. Fill in your strengths first.';return}S.p.skills=cur.concat(n).join(', ');save();forms();$('#gsmsg').textContent='Added '+n.length+' to your skills.';gHealth()}
+ if(d.abverb){$('#abv').value=d.abverb;abPrev()}
+ if(t.id==='abadd'){const i=+$('#abrole').value,v=$('#abp').value.trim();if(!v||!S.exp[i]){$('#abmsg').textContent=S.exp[i]?'Fill in the verb and what you did first.':'Add a role in step 1 first.';return}addBullet(i,v);['abv','abw','abt','abr','abs'].forEach(id=>$('#'+id).value='');abPrev();$('#abmsg').textContent='Added to your experience. Add another, or check the health score.';gHealth();gTailor()}
+ if(d.greqadd!==undefined){const inp=document.querySelector('[data-greq="'+d.greqadd+'"]'),v=inp&&inp.value.trim(),i=+($('#greqrole')||{}).value;if(v&&S.exp[i]){addBullet(i,v);inp.value='';t.textContent='Added';gHealth();gTailor()}}
+ if(d.gcp){copyTxt((S.ans||{})[d.gcp]||'',t)}
+});
 forms();bkStatus();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
