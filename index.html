@@ -86,13 +86,15 @@ a.item:hover{border-color:var(--acc)}
 </section>
 <section class="panel" id="p2">
 <h2>The job</h2><div class="grid"><div><label for="jt">Job title</label><input id="jt" data-g="job" data-k="title"></div><div><label for="jc">Company</label><input id="jc" data-g="job" data-k="co"></div></div>
+<label for="ju" style="margin-top:12px">Link to the advert (optional, used by the Apply kit)</label><input id="ju" data-g="job" data-k="url" placeholder="https://">
 <label for="jd" style="margin-top:12px">Full job description</label><textarea id="jd" data-g="job" data-k="desc" style="min-height:260px" placeholder="Paste the whole advert, including requirements and nice-to-haves."></textarea>
 <div class="row"><button class="btn pri" id="go">Check fit and generate</button></div>
 </section>
 <section class="panel" id="p3">
 <div class="np" id="report"></div>
 <div class="row np"><div class="seg" id="seg"><button class="btn" data-m="resume" aria-pressed="true">Resume (1 to 2 pages)</button><button class="btn" data-m="cv" aria-pressed="false">Full CV</button><button class="btn" data-m="letter" aria-pressed="false">Cover letter</button><button class="btn" data-m="prep" aria-pressed="false">Interview prep</button></div></div>
-<div class="row np"><button class="btn pri" id="pr">Print or save as PDF</button><button class="btn" id="cp">Copy text</button><button class="btn" id="logapp">Log this application</button><button class="btn" id="dx">Download Word</button><button class="btn" id="dt">Download plain text</button></div>
+<div class="row np"><button class="btn pri" id="pr">Print or save as PDF</button><button class="btn" id="cp">Copy text</button><button class="btn" id="logapp">Log this application</button><button class="btn" id="dx">Download Word</button><button class="btn" id="dt">Download plain text</button><button class="btn pri" id="kit">Apply kit</button></div>
+<div class="item np" id="kitbox" hidden></div>
 <p class="hint np">Click the page to edit any wording directly. Changing mode or regenerating resets edits.</p>
 <div id="doc" contenteditable="true" spellcheck="true"></div>
 </section>
@@ -105,12 +107,24 @@ a.item:hover{border-color:var(--acc)}
 <div><label for="jd2">Posted within</label><select id="jd2" data-g="js" data-k="days" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit"><option value="1">Last 24 hours</option><option value="3">Last 3 days</option><option value="7">Last 7 days</option><option value="14">Last 14 days</option><option value="30">Last 30 days</option></select></div>
 <div style="align-self:end"><label style="display:flex;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="jr" style="width:auto"> Remote only</label></div></div>
 <div id="jsug" style="margin-top:10px"></div><div id="jlinks" class="grid" style="margin-top:12px"></div>
-<p class="hint">Tip: set up job alerts on the boards you like so new matches reach you by email.</p></section>
+<p class="hint">Tip: set up job alerts on the boards you like so new matches reach you by email.</p>
+<h2>Search listings inside Tailor</h2>
+<p class="hint">Uses the title, place and date window above. Use in Tailor sends a result to the fit check. Applying still happens on the employer's site.</p>
+<div class="row"><label style="margin:0;display:flex;gap:6px;align-items:center;color:var(--ink)"><input type="checkbox" data-prov="adzuna" style="width:auto"> Adzuna (UK, needs free keys)</label><label style="margin:0;display:flex;gap:6px;align-items:center;color:var(--ink)"><input type="checkbox" data-prov="remotive" checked style="width:auto"> Remotive (remote)</label><label style="margin:0;display:flex;gap:6px;align-items:center;color:var(--ink)"><input type="checkbox" data-prov="arbeit" checked style="width:auto"> Arbeitnow (Europe)</label></div>
+<details style="margin-top:8px"><summary class="hint">Adzuna keys (free at developer.adzuna.com)</summary><div class="grid" style="margin-top:8px"><div><label for="akid">App ID</label><input id="akid" autocomplete="off"></div><div><label for="akey">App key</label><input id="akey" autocomplete="off"></div></div><p class="hint">Stored only on this device and not included in backups.</p></details>
+<div class="row"><button class="btn pri" id="lsearch">Search listings</button></div><p class="hint" id="lsmsg" role="status"></p><div id="lsres"></div>
+<h2>Apply faster: autofill bookmark</h2>
+<p class="hint">A bookmark that fills your details into an application page when you tap it. It cannot attach files, so you still upload your CV. Some sites block bookmarks like this, and forms inside embedded frames cannot be filled. The bookmark contains your personal details, so keep it private and make a new one after changing them.</p>
+<div class="row"><label for="bmcl" style="margin:0">Cover letter</label><select id="bmcl" style="padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit"><option value="none">Do not fill it in</option><option value="job">Fill in the letter for the current job</option></select><button class="btn pri" id="bmgen">Create autofill bookmark</button></div>
+<div id="bmout" hidden><p class="hint" id="bmmsg" role="status"></p>
+<p><b>Mac:</b> show your bookmarks bar (View, Show Favorites Bar), then drag this link onto it: <a id="bmlink" href="#" draggable="true" class="chip" style="text-decoration:none;font-size:14px">Tailor autofill</a></p>
+<p><b>iPhone:</b> tap Copy bookmark code. In Safari, open any page and tap Share, then Add Bookmark, name it Tailor autofill and save. Open Bookmarks, tap Edit, open that bookmark, replace its address with the pasted code, then tap Done. On an application page, open Bookmarks and tap it.</p>
+<textarea id="bmcode" readonly style="min-height:60px;font-size:12px"></textarea><div class="row"><button class="btn" id="bmcopy">Copy bookmark code</button></div></div></section>
 </main>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const KEY='tailor.v1';
-const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:''},apps:[],profiles:[],pi:-1,js:{what:'',where:'',days:'7',remote:false}});
+const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:'',url:'',why:''},apps:[],profiles:[],pi:-1,js:{what:'',where:'',days:'7',remote:false}});
 let S=blank(),mode='resume';
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r))}catch(e){}
 const save=()=>{try{if(S.profiles&&S.profiles[S.pi])Object.assign(S.profiles[S.pi],JSON.parse(JSON.stringify({p:S.p,exp:S.exp,edu:S.edu})));localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -120,7 +134,7 @@ const TA=[['summary','Summary (leave blank to auto-write one)'],['skills','Skill
 const LF={exp:[['role','Role'],['co','Company'],['dates','Dates'],['bullets','Achievements, one per line. Add numbers where true.','t']],edu:[['deg','Qualification'],['school','Institution'],['dates','Dates']]};
 function forms(){
  $('#pf').innerHTML=PF.map(([k,l])=>`<div><label for="p_${k}">${l}</label><input id="p_${k}" data-g="p" data-k="${k}" value="${esc(S.p[k])}"></div>`).join('')+TA.map(([k,l])=>`<div style="grid-column:1/-1"><label for="p_${k}">${l}</label><textarea id="p_${k}" data-g="p" data-k="${k}">${esc(S.p[k])}</textarea></div>`).join('');
- ['jt','jc','jd'].forEach(id=>{const e=$('#'+id);e.value=S.job[e.dataset.k]||''});
+ ['jt','jc','ju','jd'].forEach(id=>{const e=$('#'+id);e.value=S.job[e.dataset.k]||''});
  lists();profUI();brand();
 }
 function lists(){
@@ -136,7 +150,7 @@ document.addEventListener('click',e=>{
  if(d.del){S[d.del].splice(+d.i,1);if(!S[d.del].length)S[d.del].push(Object.fromEntries(LF[d.del].map(f=>[f[0],''])));save();lists()}
  if(d.f){flt=d.f;apps()}
  if(d.adel&&confirm('Delete this application?')){S.apps=S.apps.filter(a=>String(a.id)!==d.adel);save();apps()}
- if(d.reuse){const x=S.apps.find(a=>String(a.id)===d.reuse);if(x){S.job={title:x.role,co:x.co,desc:x.desc||''};save();forms();tab(2)}}
+ if(d.reuse){const x=S.apps.find(a=>String(a.id)===d.reuse);if(x){S.job={title:x.role,co:x.co,desc:x.desc||'',url:x.url||'',why:''};save();forms();tab(2)}}
  if(d.js!==undefined){S.js.what=d.js;save();$('#jw').value=d.js;jobs()}
  if(d.ev!==undefined){const i=document.querySelector('[data-evi="'+d.ev+'"]'),v=i&&i.value.trim();if(v){if(!S.exp.length)S.exp.push({role:'',co:'',dates:'',bullets:''});S.exp[0].bullets=(S.exp[0].bullets?S.exp[0].bullets+'\n':'')+v;save();lists();gen()}}
  if(d.cal){const[id,k]=d.cal.split(':'),x=S.apps.find(a=>String(a.id)===id);if(x)out(ics(x,k))}
@@ -163,14 +177,14 @@ $('#bkcopy').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stri
 $('#bkpaste').onclick=()=>{const t=prompt('Paste your backup text');if(!t)return;try{const d=JSON.parse(t);if(!d.p||!d.exp)throw 0;if((S.p.name||S.exp.some(e=>e.role))&&!confirm('Replace your current details with this backup?'))return;S=Object.assign(blank(),d);save();forms()}catch(x){alert('That text is not a Tailor backup.')}};
 $('#imp').onclick=()=>$('#file').click();
 $('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(!d.p||!d.exp)throw 0;if((S.p.name||S.exp.some(e=>e.role))&&!confirm('Replace your current details with this backup?'))return;S=Object.assign(blank(),d);save();forms()}catch(x){alert('That file is not a Tailor backup.')}})};
-$('#ex').onclick=()=>{S={p:{name:'Alex Morgan',title:'Operations Analyst',email:'alex@example.com',phone:'07700 900123',loc:'Manchester, UK',links:'linkedin.com/in/alexmorgan',summary:'',skills:'Excel, SQL, Power BI, stakeholder reporting, process improvement, Python, project coordination',extra:'Lean Six Sigma Green Belt. Languages: English, Spanish.'},exp:[{role:'Operations Analyst',co:'Northway Logistics',dates:'2022 to present',bullets:'Built Power BI dashboards that cut weekly reporting time by 6 hours\nReduced delivery errors 18% by redesigning the dispatch checklist\nWrote SQL queries to track on-time performance across 12 depots\nSupported team meetings and general admin'},{role:'Coordinator',co:'Brightside Retail',dates:'2019 to 2022',bullets:'Coordinated stock projects across 5 stores\nTrained 14 new starters on inventory systems'}],edu:[{deg:'BSc Business Management',school:'University of Salford',dates:'2016 to 2019'}],job:{title:'Senior Data Analyst',co:'Acme Freight',desc:'We need a Senior Data Analyst to own reporting and analytics for our operations team. You will build dashboards in Power BI and Tableau, write SQL daily, and present insights to stakeholders. 3+ years experience required. Python or R is a plus. Experience with process improvement and forecasting is desirable. Strong communication skills and ownership of projects.'}};save();forms()};
+$('#ex').onclick=()=>{S=Object.assign(blank(),{p:{name:'Alex Morgan',title:'Operations Analyst',email:'alex@example.com',phone:'07700 900123',loc:'Manchester, UK',links:'linkedin.com/in/alexmorgan',summary:'',skills:'Excel, SQL, Power BI, stakeholder reporting, process improvement, Python, project coordination',extra:'Lean Six Sigma Green Belt. Languages: English, Spanish.'},exp:[{role:'Operations Analyst',co:'Northway Logistics',dates:'2022 to present',bullets:'Built Power BI dashboards that cut weekly reporting time by 6 hours\nReduced delivery errors 18% by redesigning the dispatch checklist\nWrote SQL queries to track on-time performance across 12 depots\nSupported team meetings and general admin'},{role:'Coordinator',co:'Brightside Retail',dates:'2019 to 2022',bullets:'Coordinated stock projects across 5 stores\nTrained 14 new starters on inventory systems'}],edu:[{deg:'BSc Business Management',school:'University of Salford',dates:'2016 to 2019'}],job:{title:'Senior Data Analyst',co:'Acme Freight',desc:'We need a Senior Data Analyst to own reporting and analytics for our operations team. You will build dashboards in Power BI and Tableau, write SQL daily, and present insights to stakeholders. 3+ years experience required. Python or R is a plus. Experience with process improvement and forecasting is desirable. Strong communication skills and ownership of projects.'}});save();forms()};
 const STOP=new Set('the and for you your with are our will that this from have has can all any not but who what who they their them its was were been being more most also into over about such per out one two use used using able etc via within across including include role team work working experience years year ability strong good great looking join help well new well must should may might would could than then these those other each both while where when which how why able need needs required requirements responsibilities skills plus desirable preferred company business candidate candidates position job opportunity benefits salary apply'.split(' '));
 const norm=w=>w.toLowerCase().replace(/[^a-z0-9+#]/g,'').replace(/s$/,'');
 const terms=t=>(String(t).toLowerCase().match(/[a-z][a-z0-9+#.\-]{1,}/g)||[]).map(w=>w.replace(/[.\-]+$/,'')).filter(w=>w.length>2&&!STOP.has(w));
 const lines=t=>String(t||'').split('\n').map(x=>x.trim()).filter(Boolean);
 const skills=()=>S.p.skills.split(/[,\n]/).map(x=>x.trim()).filter(Boolean);
-function analyse(){
- const jd=S.job.desc,all=[S.p.title,S.p.summary,S.p.skills,S.p.extra,...S.exp.map(e=>e.role+' '+e.bullets),...S.edu.map(e=>e.deg)].join(' ');
+function analyse(jdo){
+ const jd=jdo!==undefined?jdo:S.job.desc,all=[S.p.title,S.p.summary,S.p.skills,S.p.extra,...S.exp.map(e=>e.role+' '+e.bullets),...S.edu.map(e=>e.deg)].join(' ');
  const have=new Set(terms(all).map(norm)),f={};
  terms(jd).forEach(w=>f[w]=(f[w]||0)+1);
  let keys=Object.entries(f).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,26).map(e=>e[0]);
@@ -346,7 +360,7 @@ $('#aadd').onclick=()=>{newApp({status:'Saved',date:'',follow:''});flt='All';app
 $('#logapp').onclick=()=>{const b=$('#logapp'),say=m=>{b.textContent=m;setTimeout(()=>b.textContent='Log this application',2000)};
  if(!S.job.title&&!S.job.co){say('Add job title or company first');return}
  if(S.apps.some(a=>a.role===S.job.title&&a.co===S.job.co&&a.desc===S.job.desc)){say('Already logged');return}
- newApp({role:S.job.title,co:S.job.co,score:analyse().score,desc:S.job.desc,prof:(S.profiles[S.pi]||{}).n||''});say('Logged. See tab 4')};
+ newApp({role:S.job.title,co:S.job.co,score:analyse().score,desc:S.job.desc,url:S.job.url||'',prof:(S.profiles[S.pi]||{}).n||''});say('Logged. See tab 4')};
 $('#acsv').onclick=async()=>{const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
  const rows=[['Role','Company','Status','Applied','Follow-up','Fit %','Link','Notes'],...S.apps.map(a=>[a.role,a.co,a.status,a.date,a.follow,a.score,a.url,a.notes])];
  const f=new File([rows.map(r=>r.map(q).join(',')).join('\n')],'applications.csv',{type:'text/csv'});
@@ -377,15 +391,15 @@ function docLines(){const o=[];[...$('#doc').children].forEach(n=>{
  else if(n.classList.contains('hd'))o.push({t:[...n.children].map(x=>x.innerText).filter(Boolean).join('  |  '),s:'r'});
  else n.innerText.split('\n').forEach(t=>o.push({t,s:''}))});return o}
 const fname=()=>(S.p.name||'CV').replace(/[^\w ]+/g,'').trim()+' - '+({resume:'Resume',cv:'CV',letter:'Cover letter',prep:'Interview prep'})[mode];
-async function docx(){
+async function docx(L,fn){
  const x=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
  const P=l=>{const b=['name','h','r'].includes(l.s),sz=l.s==='name'?36:l.s==='h'?24:21;return `<w:p><w:pPr><w:spacing w:before="${l.s==='h'?200:40}" w:after="40"/>${l.s==='b'?'<w:ind w:left="360" w:hanging="220"/>':''}</w:pPr><w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/>${b?'<w:b/>':''}<w:sz w:val="${sz}"/></w:rPr><w:t xml:space="preserve">${l.s==='b'?'• ':''}${x(l.t)}</w:t></w:r></w:p>`};
  const z=new JSZip(),H='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
  z.file('[Content_Types].xml',H+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
  z.file('_rels/.rels',H+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>');
- z.file('docProps/core.xml',H+'<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>'+x(fname())+'</dc:title><dc:creator>'+x(S.p.name||'')+'</dc:creator></cp:coreProperties>');
- z.file('word/document.xml',H+'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+docLines().map(P).join('')+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="850" w:right="850" w:bottom="850" w:left="850" w:header="400" w:footer="400" w:gutter="0"/></w:sectPr></w:body></w:document>');
- return new File([await z.generateAsync({type:'blob'})],fname()+'.docx',{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+ z.file('docProps/core.xml',H+'<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title>'+x(fn||fname())+'</dc:title><dc:creator>'+x(S.p.name||'')+'</dc:creator></cp:coreProperties>');
+ z.file('word/document.xml',H+'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+(L||docLines()).map(P).join('')+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="850" w:right="850" w:bottom="850" w:left="850" w:header="400" w:footer="400" w:gutter="0"/></w:sectPr></w:body></w:document>');
+ return new File([await z.generateAsync({type:'blob'})],(fn||fname())+'.docx',{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
 }
 $('#dx').onclick=async()=>{if(typeof JSZip==='undefined'){alert('The Word builder needs an internet connection the first time.');return}out(await docx())};
 $('#dt').onclick=()=>out(new File([docLines().map(l=>l.s==='h'?'\n'+l.t.toUpperCase():l.s==='b'?'- '+l.t:l.t).join('\n')],fname()+'.txt',{type:'text/plain'}));
@@ -399,7 +413,7 @@ function ics(a,k){
 /* ---- Job search links and branding ---- */
 function brand(){const n=(S.p.name||'').trim();$('h1').textContent=n?n+"'s Tailor":'Tailor';document.title=n?n+' | Tailor':'Tailor: CV and Resume Generator'}
 window.addEventListener('beforeprint',()=>{document.title=fname()});window.addEventListener('afterprint',brand);
-function jobsOpen(){const j=S.js;if(!j.what)j.what=S.job.title||S.p.title||'';if(!j.where)j.where=S.p.loc||'';save();$('#jw').value=j.what;$('#jl').value=j.where;$('#jd2').value=j.days;$('#jr').checked=!!j.remote;jobs()}
+function jobsOpen(){const j=S.js;if(!j.what)j.what=S.job.title||S.p.title||'';if(!j.where)j.where=S.p.loc||'';save();$('#jw').value=j.what;$('#jl').value=j.where;$('#jd2').value=j.days;$('#jr').checked=!!j.remote;jobs();lsInit()}
 $('#jr').onchange=e=>{S.js.remote=e.target.checked;save();jobs()};
 function jobs(){
  const j=S.js,w=(j.what||'').trim(),l=(j.where||'').trim(),d=+j.days||7,e=encodeURIComponent,r=j.remote,q=r&&w?w+' remote':w;
@@ -420,6 +434,135 @@ function jobs(){
   ['Find a job (GOV.UK)','Official government listings',`https://findajob.dwp.gov.uk/search?q=${e(q)}&w=${e(l)}`]];
  $('#jlinks').innerHTML=L.map(x=>`<a class="item" href="${esc(x[2])}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin:0"><b>${x[0]}</b><div class="hint">${x[1]}</div></a>`).join('');
 }
+/* ---- Apply kit ---- */
+function letterText(){
+ const a=analyse(),p=S.p,K=a.matched.map(norm),rank=t=>terms(t).filter(w=>K.includes(norm(w))).length;
+ const topSk=skills().filter(s=>K.includes(norm(s))||a.matched.some(k=>s.toLowerCase().includes(k)));
+ const summary=p.summary.trim()||`${p.title||'Professional'} with experience in ${(topSk.length?topSk:skills()).slice(0,4).join(', ')||'a range of areas'}${S.job.title?`, applying for the ${S.job.title} role${S.job.co?' at '+S.job.co:''}`:''}.`;
+ const e=S.exp[0]||{},best=lines(e.bullets).sort((x,y)=>rank(y)-rank(x))[0],m=a.matched.filter(k=>!/^\d/.test(k)).slice(0,3),why=(S.job.why||'').trim();
+ return `${p.name||'Your name'}\n${[p.email,p.phone].filter(Boolean).join(' | ')}\n\nDear ${S.job.co?'Hiring Team at '+S.job.co:'Hiring Team'},\n\nI am writing to apply for the ${S.job.title||'[role]'} position${S.job.co?' at '+S.job.co:''}. ${summary}\n\n${m.length?`The advert emphasises ${m.join(', ')}, which is where my background is strongest. `:''}${e.role?`In my role as ${e.role}${e.co?' at '+e.co:''}, `:''}${best?best.charAt(0).toLowerCase()+best.slice(1).replace(/\.$/,'')+'.':'[add your strongest relevant achievement].'}\n\n${why||'[Add one sentence on why this company and this role.]'}\n\nI would welcome the chance to discuss how I can contribute. Thank you for your time.\n\nKind regards,\n${p.name||'Your name'}`;
+}
+function kitVals(){const p=S.p,e=S.exp[0]||{};return{name:p.name,email:p.email,phone:p.phone,loc:p.loc,links:p.links,title:p.title,emp:e.co||'',summary:p.summary.trim()||'',skills:p.skills,letter:letterText()}}
+function kit(){
+ const v=kitVals(),L=[['name','Full name'],['email','Email'],['phone','Phone'],['loc','Location'],['links','Links'],['title','Professional title'],['emp','Current or latest employer'],['summary','Summary'],['skills','Skills'],['letter','Cover letter']];
+ const warn=[],a=analyse();
+ if(!S.job.title&&!S.job.co)warn.push('Add the job title and company in step 2.');
+ if(!S.p.email||!S.p.phone)warn.push('Your email or phone is missing.');
+ if(!(S.job.why||'').trim())warn.push('Write one sentence on why this company below, or the cover letter keeps a bracketed gap.');
+ if(S.job.desc.trim()&&a.score<45)warn.push('Fit is low ('+a.score+'%). Make sure you meet the must-haves before applying.');
+ const em=(S.job.desc.match(/[\w.+-]+@[\w-]+\.[\w.-]+/)||[])[0]||'',url=S.job.url||'',ok=/^https?:\/\//i.test(url);
+ const subj='Application: '+(S.job.title||'role')+(S.p.name?' - '+S.p.name:''),body=v.letter.slice(0,1500)+(v.letter.length>1500?'\n[Paste the full letter here]':'');
+ const rows=L.map(([k,l])=>`<div class="row" style="margin:6px 0"><div style="min-width:150px"><b>${l}</b><div class="hint" style="max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(String(v[k]||'(empty)').replace(/\s+/g,' ').slice(0,80))}</div></div><button class="btn" data-cp="${k}">Copy</button></div>`).join('');
+ $('#kitbox').innerHTML=`<b>Apply kit</b><p class="hint">Applying happens on the employer's site, so this puts everything you need one tap away. Copy each item, paste it into their form, and upload your downloaded CV.</p>
+ ${warn.length?`<ul class="tips">${warn.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
+ <label for="why" style="margin-top:8px">Why this company and role (one sentence, goes into the cover letter)</label><textarea id="why" data-g="job" data-k="why" style="min-height:60px">${esc(S.job.why||'')}</textarea>
+ <div style="margin-top:10px">${rows}</div>
+ <div class="row">${ok?`<a class="btn pri" href="${esc(url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open the advert</a>`:'<span class="hint">Add a link to the advert in step 2 to get an Open button.</span>'}
+ ${em?`<a class="btn" href="mailto:${esc(em)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}" style="text-decoration:none">Email application to ${esc(em)}</a>`:''}
+ <button class="btn" id="kshare">Share CV and letter (Mail)</button><button class="btn" id="mkapp">Mark as applied</button></div>
+ <p class="hint" id="kitmsg" role="status">${em?'Email applications: attach your downloaded CV before sending. Long letters are cut off in the email draft, so paste the full copied letter.':''}</p>`;
+}
+$('#kit').onclick=()=>{const b=$('#kitbox');b.hidden=!b.hidden;if(!b.hidden)kit()};
+function copyTxt(t,b){const old=b.textContent,done=m=>{b.textContent=m;setTimeout(()=>b.textContent=old,1500)};
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>done('Copied'),()=>{prompt('Copy this text',t);done(old)});else{prompt('Copy this text',t);done(old)}}
+document.addEventListener('click',e=>{
+ const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.cp){const v=kitVals()[t.dataset.cp];copyTxt(v||'',t)}
+ if(t.id==='mkapp'){const x=S.apps.find(a=>a.role===S.job.title&&a.co===S.job.co&&a.desc===S.job.desc);
+  if(x){x.status='Applied';x.date=today();x.follow=inDays(7);x.url=x.url||S.job.url||'';save()}
+  else newApp({role:S.job.title,co:S.job.co,score:analyse().score,desc:S.job.desc,url:S.job.url||'',prof:(S.profiles[S.pi]||{}).n||''});
+  $('#kitmsg').textContent='Marked as applied. A follow-up is set for 7 days from now in the Applications tab.'}
+});
+/* ---- Listings, autofill bookmark, share ---- */
+const KK='tailor.keys';
+const getKeys=()=>{try{return JSON.parse(localStorage.getItem(KK))||{}}catch(e){return{}}};
+const putKeys=o=>{try{localStorage.setItem(KK,JSON.stringify(o))}catch(e){}};
+function lsInit(){const k=getKeys();$('#akid').value=k.aid||'';$('#akey').value=k.akey||'';const a=$('[data-prov="adzuna"]');if(a)a.checked=!!(k.aid&&k.akey)}
+$('#akid').onchange=$('#akey').onchange=()=>{putKeys({aid:$('#akid').value.trim(),akey:$('#akey').value.trim()});lsInit()};
+async function fetchJ(u){const c=new AbortController(),t=setTimeout(()=>c.abort(),12000);try{const r=await fetch(u,{signal:c.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json()}finally{clearTimeout(t)}}
+const strip=h=>{try{const t=String(h||'').replace(/<\/(p|li|div|h\d|ul|ol)>|<br\s*\/?>/gi,'\n');const x=new DOMParser().parseFromString(t,'text/html').body.textContent||'';return x.replace(/[ \t]+/g,' ').replace(/\n\s*\n+/g,'\n').trim()}catch(e){return String(h||'')}};
+const ageDays=d=>{const t=Date.parse(d);return isNaN(t)?null:(Date.now()-t)/864e5};
+const PROV={
+ adzuna:{n:'Adzuna',run:async(q,l,d)=>{const k=getKeys(),e=encodeURIComponent;if(!k.aid||!k.akey)throw new Error('add your free Adzuna keys first');
+  const j=await fetchJ(`https://api.adzuna.com/v1/api/jobs/gb/search/1?app_id=${e(k.aid)}&app_key=${e(k.akey)}&results_per_page=20&what=${e(q)}${l?'&where='+e(l):''}&max_days_old=${d}&sort_by=date&content-type=application/json`);
+  return(j.results||[]).map(r=>({title:strip(r.title),co:(r.company||{}).display_name||'',loc:(r.location||{}).display_name||'',desc:strip(r.description),url:r.redirect_url,date:r.created,src:'Adzuna',full:false}))}},
+ remotive:{n:'Remotive',run:async(q)=>{const j=await fetchJ('https://remotive.com/api/remote-jobs?limit=30&search='+encodeURIComponent(q));
+  return(j.jobs||[]).map(r=>({title:r.title,co:r.company_name,loc:r.candidate_required_location||'Remote',desc:strip(r.description),url:r.url,date:r.publication_date,src:'Remotive',full:true}))}},
+ arbeit:{n:'Arbeitnow',run:async(q)=>{const j=await fetchJ('https://www.arbeitnow.com/api/job-board-api'),w=terms(q);
+  return(j.data||[]).map(r=>({title:r.title,co:r.company_name,loc:(r.location||'')+(r.remote?' (remote)':''),desc:strip(r.description),url:r.url,date:r.created_at?new Date(r.created_at*1000).toISOString():'',src:'Arbeitnow',full:true,_t:((r.title||'')+' '+(r.tags||[]).join(' ')).toLowerCase()})).filter(r=>!w.length||w.some(x=>r._t.includes(x)))}}
+};
+let RES=[];
+async function listSearch(){
+ const q=(S.js.what||'').trim(),l=(S.js.where||'').trim(),d=+S.js.days||7,m=$('#lsmsg'),on=$$('[data-prov]').filter(c=>c.checked).map(c=>c.dataset.prov);
+ if(!q){m.textContent='Enter a job title or keywords above first.';return}
+ if(!on.length){m.textContent='Tick at least one source.';return}
+ m.textContent='Searching...';$('#lsres').innerHTML='';
+ const out=await Promise.allSettled(on.map(p=>PROV[p].run(q+(p==='adzuna'&&S.js.remote?' remote':''),l,d)));
+ let all=[],bad=[];
+ out.forEach((o,i)=>{if(o.status==='fulfilled')all=all.concat(o.value);else{const r=o.reason||{};bad.push(PROV[on[i]].n+': '+(r.name==='AbortError'?'timed out':r instanceof TypeError?'could not be reached (the site may block in-browser access, or you are offline)':r.message||'failed'))}});
+ const seen=new Set();
+ all=all.filter(r=>{if(!r.title||!/^https?:\/\//i.test(r.url||''))return false;const a=ageDays(r.date);if(a!==null&&a>d)return false;if(seen.has(r.url))return false;seen.add(r.url);return true});
+ all.forEach(r=>r.fit=analyse(r.title+' '+r.desc).score);
+ all.sort((a,b)=>b.fit-a.fit);RES=all.slice(0,40);
+ m.textContent=(RES.length?RES.length+' result'+(RES.length>1?'s':'')+', best fit first.':'No results.')+(bad.length?' '+bad.join('. ')+'.':'');
+ $('#lsres').innerHTML=RES.map((r,i)=>`<div class="item"><b>${esc(r.title)}</b>${r.co?' at '+esc(r.co):''}<div class="hint">${esc(r.loc)}${r.date?' | '+esc(String(r.date).slice(0,10)):''} | ${esc(r.src)}</div><div style="margin:4px 0"><span class="chip${r.fit<45?' m':''}">Fit ${r.fit}%${r.full?'':' (preview only)'}</span></div><div class="hint">${esc(r.desc.replace(/\s+/g,' ').slice(0,180))}</div><div class="row"><button class="btn pri" data-use="${i}">Use in Tailor</button><button class="btn" data-save="${i}">Save to tracker</button><a class="btn" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open advert</a></div></div>`).join('');
+}
+$('#lsearch').onclick=listSearch;
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
+ if(d.use!==undefined){const r=RES[+d.use];if(r){S.job={title:r.title,co:r.co,url:r.url,why:'',desc:r.desc+(r.full?'':'\n\n[Only a short preview was available from the job board. Open the advert and paste the full text here for an accurate fit check.]')};save();forms();tab(2)}}
+ if(d.save!==undefined){const r=RES[+d.save];if(r){if(S.apps.some(a=>a.url&&a.url===r.url)){t.textContent='Already saved';return}newApp({role:r.title,co:r.co,url:r.url,desc:r.desc,status:'Saved',date:'',follow:'',score:r.fit});t.textContent='Saved to tracker'}}
+});
+/* autofill bookmark: bmFill must stay self-contained, it is copied into the bookmark */
+function bmFill(D){
+ var sig=function(el){var s=[el.name,el.id,el.placeholder,el.getAttribute('aria-label'),el.getAttribute('autocomplete'),el.getAttribute('data-qa'),el.getAttribute('data-testid')].join(' ');var lb='';
+  try{if(el.labels&&el.labels.length)lb=Array.prototype.map.call(el.labels,function(x){return x.textContent}).join(' ');var by=el.getAttribute('aria-labelledby');if(by)lb+=' '+by.split(' ').map(function(i){var n=document.getElementById(i);return n?n.textContent:''}).join(' ');if(!lb){var c=el.closest('label');if(c)lb=c.textContent}}catch(e){}
+  return(s+' '+lb).toLowerCase().replace(/[_\-.\[\]]+/g,' ')};
+ var pick=function(el){var s=sig(el),ty=(el.type||'').toLowerCase();
+  if(ty==='email'||/e ?mail/.test(s))return D.e;
+  if(ty==='tel'||/phone|mobile|telephone|\btel\b/.test(s))return D.p;
+  if(/linkedin/.test(s))return D.li;
+  if(/github|portfolio|website|web site|personal (site|url)/.test(s))return D.w;
+  if(/first ?name|given name|forename|fname/.test(s))return D.f;
+  if(/last ?name|surname|family name|lname/.test(s))return D.l;
+  if(/company|employer|organi[sz]ation/.test(s))return/current|recent|present|latest/.test(s)?D.emp:'';
+  if(/current.*(title|position|role)|headline/.test(s))return D.t;
+  if(/\bcity\b|\btown\b/.test(s))return D.c;
+  if(/location/.test(s))return D.loc;
+  if(/full ?name|your name|candidate name|\bname\b/.test(s)&&!/user ?name|company|file|school|reference|referee|employer|manager/.test(s))return D.n;
+  if(el.tagName==='TEXTAREA'){if(/cover|letter|message to|motivation/.test(s))return D.cl;if(/summary|about you|about yourself|introduc|profile/.test(s))return D.s}
+  return''};
+ var n=0,els=document.querySelectorAll('input,textarea');
+ for(var i=0;i<els.length;i++){var el=els[i],ty=(el.type||'').toLowerCase();
+  if(el.disabled||el.readOnly||/^(hidden|password|file|checkbox|radio|submit|button|image|reset|search|number|date|range|color)$/.test(ty))continue;
+  if(el.value&&el.value.trim())continue;
+  if(el.offsetParent===null&&getComputedStyle(el).position!=='fixed')continue;
+  var v=pick(el);if(!v)continue;
+  var proto=el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;
+  Object.getOwnPropertyDescriptor(proto,'value').set.call(el,v);
+  el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));el.dispatchEvent(new Event('blur',{bubbles:true}));n++}
+ var b=document.createElement('div');b.textContent='Tailor filled '+n+' field'+(n===1?'':'s')+'. Check everything, attach your CV, then submit.';
+ b.style.cssText='position:fixed;z-index:2147483647;left:12px;right:12px;top:12px;padding:12px 14px;background:#1f4e8c;color:#fff;font:15px/1.4 -apple-system,system-ui,sans-serif;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.3)';
+ document.body.appendChild(b);setTimeout(function(){b.remove()},5000)}
+function bmData(withLetter){const p=S.p,parts=(p.name||'').trim().split(/\s+/).filter(Boolean),links=(p.links||'').split(/[,\s]+/).filter(Boolean),full=u=>u&&!/^https?:/i.test(u)?'https://'+u:u||'';
+ return{n:p.name||'',f:parts[0]||'',l:parts.slice(1).join(' '),e:p.email||'',p:p.phone||'',c:(p.loc||'').split(',')[0].trim(),loc:p.loc||'',li:full(links.find(x=>/linkedin/i.test(x))),w:full(links.find(x=>!/linkedin/i.test(x))),t:p.title||'',emp:(S.exp[0]||{}).co||'',s:p.summary.trim(),cl:withLetter?letterText():''}}
+$('#bmgen').onclick=()=>{const inc=$('#bmcl').value==='job',href='javascript:'+encodeURIComponent('void(('+bmFill.toString()+')('+JSON.stringify(bmData(inc))+'))');
+ $('#bmlink').setAttribute('href',href);$('#bmcode').value=href;$('#bmout').hidden=false;
+ const miss=[['name',S.p.name],['email',S.p.email],['phone',S.p.phone]].filter(x=>!x[1]).map(x=>x[0]);
+ $('#bmmsg').textContent=(miss.length?'Your '+miss.join(', ')+' is empty in step 1, so those fields will not be filled. ':'Created from your current details. ')+(inc?'It includes the cover letter for '+(S.job.co||'the current job')+', so make a new one for each employer.':'')};
+$('#bmlink').onclick=e=>{e.preventDefault();alert('Do not tap it here. Drag it to your bookmarks bar, or use Copy bookmark code.')};
+$('#bmcopy').onclick=()=>copyTxt($('#bmcode').value,$('#bmcopy'));
+/* share CV and letter */
+async function shareFiles(){
+ const m=$('#kitmsg');if(typeof JSZip==='undefined'){m.textContent='The Word builder needs an internet connection the first time.';return}
+ const nm=(S.p.name||'CV').replace(/[^\w ]+/g,'').trim(),keepMode=mode,keepHTML=$('#doc').innerHTML;
+ mode='resume';gen();const cvLines=docLines();mode=keepMode;$('#doc').innerHTML=keepHTML;
+ const files=[await docx(cvLines,nm+' - CV'),await docx(letterText().split('\n').map((t,i)=>({t,s:i===0?'name':''})),nm+' - Cover letter')];
+ const data={files,title:'Application: '+(S.job.title||'role')+(S.p.name?' - '+S.p.name:''),text:letterText()};
+ try{if(navigator.canShare&&navigator.canShare({files})){await navigator.share(data);m.textContent='Shared. Choose Mail to send it as an email with both files attached.'}
+  else m.textContent='This browser cannot share files. Use Download Word and attach the files yourself.'}
+ catch(e){if(e.name!=='AbortError')m.textContent='Could not share ('+(e.message||e)+').'}
+}
+document.addEventListener('click',e=>{if(e.target.closest('#kshare'))shareFiles()});
 forms();bkStatus();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

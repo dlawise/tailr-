@@ -35,3 +35,7 @@ Replace `index.html` in the repo. If the old version sticks, change `V='tailor-v
 - Back up to Files or iCloud, which includes profiles and applications.
 - Your name appears in the app header, the PDF title, file names and the Word file properties.
 - Find jobs tab: one-tap searches on Google Jobs, employer career pages, DuckDuckGo, Indeed, LinkedIn, Reed, Totaljobs, CV-Library and GOV.UK Find a job, prefilled from your title, location and skills. Each opens in a new tab.
+- Apply kit (tab 3): one-tap copy of every field you paste into an application form, the cover letter with your "why this company" sentence, an Open the advert button, an email-application draft when the advert lists an address, and Mark as applied to log it with a follow-up date.
+- Find jobs tab, "Search listings inside Tailor": searches Adzuna (UK, free keys), Remotive and Arbeitnow, ranks results by fit, and sends one to the fit check or the tracker. Adzuna keys stay on the device and are not in backups.
+- Find jobs tab, "Apply faster: autofill bookmark": creates a bookmark that fills your details into application pages. Mac: drag the link to the bookmarks bar. iPhone: copy the code into a Safari bookmark's address.
+- Apply kit: "Share CV and letter (Mail)" opens the share sheet with both Word files attached.
