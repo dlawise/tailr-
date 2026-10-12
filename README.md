@@ -41,3 +41,12 @@ Replace `index.html` in the repo. If the old version sticks, change `V='tailor-v
 - Apply kit: "Share CV and letter (Mail)" opens the share sheet with both Word files attached.
 - Listings are role-aware: results are scored against the job title you search and your profile title, weak matches are hidden (with a Show hidden button), places outside your area are dropped, level mismatches (for example junior versus senior) are flagged, and your profile title is searched too.
 - Guide tab (tab 6): CV health check with a score and fixes, a tailoring plan for the loaded job, a summary drafter, an achievement builder, questions turned from the advert's requirements, saved answers for application forms (also copyable in the Apply kit), and written guides (tailoring, achievements, UK CV and ATS rules, career change, quarterly updates, pre-apply checklist).
+
+
+## Career tab (merged from Career Ledger)
+Tab 7 holds the full Career Ledger: Overview, Goals, Path advisor, Applications (opens the tracker), Network, Skills, Wins, Reviews, Personal brand, Compensation and Settings.
+- Pipeline entries are unified into the Applications tracker (Researching=Saved, Interviewing=Interview, Closed=Withdrawn) with a Contact field.
+- Wins feed the fit check, interview prep and CV bullets; skills and brand headline/about can be pushed to the CV.
+- AI features (Path advisor, Personal brand) need your own Cloudflare Worker. Enter its URL and token in Career > Settings. These stay on the device and are never included in backups.
+- Old `ledger-*` data and old Ledger backups are imported automatically or via Settings.
+- Service worker cache version: `tailor-v11`.

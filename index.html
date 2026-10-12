@@ -12,9 +12,9 @@
 <title>Tailor: CV and Resume Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f3f5f8;--card:#fff;--ink:#17233a;--mut:#5b6678;--line:#d9dfe8;--acc:#1f4e8c;--acc-ink:#fff;--ok:#0f766e;--okbg:#d9f2ee;--warn:#9a5b00;--warnbg:#fdebc8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--card:#18223a;--ink:#e8edf6;--mut:#9aa7bd;--line:#2c3a57;--acc:#7fb0f0;--acc-ink:#0f1624;--ok:#5fd3c4;--okbg:#12403c;--warn:#f2b455;--warnbg:#47340f}}
-:root[data-theme="dark"]{--bg:#0f1624;--card:#18223a;--ink:#e8edf6;--mut:#9aa7bd;--line:#2c3a57;--acc:#7fb0f0;--acc-ink:#0f1624;--ok:#5fd3c4;--okbg:#12403c;--warn:#f2b455;--warnbg:#47340f}
+:root{--bg:#f3f5f8;--card:#fff;--ink:#17233a;--mut:#5b6678;--line:#d9dfe8;--acc:#1f4e8c;--acc-ink:#fff;--ok:#0f766e;--okbg:#d9f2ee;--warn:#9a5b00;--warnbg:#fdebc8;--bad:#b3402a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--card:#18223a;--ink:#e8edf6;--mut:#9aa7bd;--line:#2c3a57;--acc:#7fb0f0;--acc-ink:#0f1624;--ok:#5fd3c4;--okbg:#12403c;--warn:#f2b455;--warnbg:#47340f;--bad:#f0907a}}
+:root[data-theme="dark"]{--bg:#0f1624;--card:#18223a;--ink:#e8edf6;--mut:#9aa7bd;--line:#2c3a57;--acc:#7fb0f0;--acc-ink:#0f1624;--ok:#5fd3c4;--okbg:#12403c;--warn:#f2b455;--warnbg:#47340f;--bad:#f0907a}
 *{box-sizing:border-box}[hidden]{display:none!important}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif}
 header{padding:20px 16px 8px;max-width:980px;margin:0 auto}
@@ -63,6 +63,51 @@ details.gd p,details.gd li{margin:6px 0}
 #doc .q{font-weight:600;margin-top:8px}
 #doc .letter{white-space:pre-wrap;font-size:14px}
 @media(max-width:640px){#doc{padding:22px 16px}}
+
+#p7 select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+#p7 .seg .btn{padding:7px 11px;font-size:14px}
+.btn.dng{color:var(--bad);border-color:var(--bad)}
+.lg-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+@media(max-width:640px){.lg-stats{grid-template-columns:repeat(2,1fr)}}
+.lg-stat{border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.lg-stat b{display:block;font:700 28px "Source Serif 4",Georgia,serif;color:var(--acc);line-height:1.1}
+.lg-stat span{font-size:13px;color:var(--mut)}
+.lg-box{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
+.lg-two{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
+@media(max-width:760px){.lg-two{grid-template-columns:1fr}}
+.lg-mini{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+.lg-mini:last-of-type{border-bottom:0}
+.lg-item{border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;gap:14px}
+@media(max-width:640px){.lg-item{flex-direction:column}}
+.lg-body{flex:1;min-width:0}
+.lg-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.lg-title{font-weight:600}
+.lg-meta{font-size:13px;color:var(--mut)}
+.lg-notes{font-size:14px;color:var(--mut);margin-top:4px}
+.lg-act{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap}
+.lg-badge{font-size:12px;padding:1px 9px;border-radius:10px;border:1px solid var(--line);color:var(--mut)}
+.lg-badge.acc{border-color:var(--acc);color:var(--acc)}
+.lg-badge.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.lg-badge.warn{background:var(--warnbg);border-color:var(--warn);color:var(--warn)}
+.lg-level{display:flex;gap:3px;margin-top:6px}
+.lg-level span{width:20px;height:6px;border-radius:3px;background:var(--line)}
+.lg-level span.on{background:var(--acc)}
+.lg-empty{text-align:center;padding:28px 10px;color:var(--mut);border:1px dashed var(--line);border-radius:8px}
+.lg-empty b{display:block;color:var(--ink);margin-bottom:4px}
+.lg-form{border:1px solid var(--line);border-radius:8px;padding:14px;margin:10px 0;background:var(--bg)}
+.lg-num{font:700 22px "Source Serif 4",Georgia,serif;color:var(--acc);width:34px;flex-shrink:0}
+.lg-pre{white-space:pre-wrap;margin:6px 0 8px}
+.lg-amt{font:700 20px "Source Serif 4",Georgia,serif;color:var(--acc)}
+.lg-link{all:unset;cursor:pointer;color:var(--acc);text-decoration:underline}
+.lg-link:focus-visible{outline:2px solid var(--acc)}
+.lg-err{border:1px solid var(--bad);color:var(--ink);border-radius:8px;padding:12px 14px;margin-top:10px}
+.lg-err b{color:var(--bad);display:block;margin-bottom:3px}
+.lg-ok{border:1px solid var(--ok);background:var(--okbg);border-radius:8px;padding:10px 14px;margin-top:10px}
+.lg-load{display:flex;gap:10px;align-items:center;color:var(--mut);padding:18px 0}
+.lg-spin{width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:lgs .8s linear infinite}
+@keyframes lgs{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.lg-spin{animation:none}}
+@media(max-width:760px){input,select,textarea{font-size:16px!important}}
 @media print{body{background:#fff}header,nav,.np,.panel:not(#p3){display:none!important}#p3{display:block;border:0;padding:0}#doc{border:0;margin:0;padding:0}main{margin:0;padding:0;max-width:none}@page{margin:14mm}}
 </style></head><body>
 <header class="np"><h1>Tailor</h1><p>Paste a job. Add your details. Get a matched resume, CV and cover letter, plus an honest fit check.</p></header>
@@ -72,7 +117,8 @@ details.gd p,details.gd li{margin:6px 0}
 <button role="tab" data-t="3" aria-selected="false">3. Fit and documents</button>
 <button role="tab" data-t="4" aria-selected="false">4. Applications</button>
 <button role="tab" data-t="5" aria-selected="false">5. Find jobs</button>
-<button role="tab" data-t="6" aria-selected="false">6. Guide</button></nav>
+<button role="tab" data-t="6" aria-selected="false">6. Guide</button>
+<button role="tab" data-t="7" aria-selected="false">7. Career</button></nav>
 <main>
 <section class="panel on" id="p1">
 <div class="row np" style="margin:0 0 12px"><label for="prof" style="margin:0">Profile</label><select id="prof" style="padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit"></select><button class="btn" id="pnew">Save as new profile</button><button class="btn" id="pdel" hidden>Delete profile</button></div>
@@ -154,13 +200,18 @@ details.gd p,details.gd li{margin:6px 0}
 <details class="gd"><summary><b>Summary formula</b></summary><p>[Job title] with [years] of experience in [three strengths]. [One proof point with a number]. [Optional: what you want next]. Keep it to two or three sentences, about 25 to 70 words, and change the strengths to match each advert.</p></details>
 <details class="gd"><summary><b>UK CV rules and ATS tips</b></summary><ul><li>Reverse chronological order, newest first. Usually two pages at most.</li><li>Leave out a photo, date of birth and marital status. Town or city is enough, no full address.</li><li>Plain headings: Profile, Experience, Education, Skills. Avoid tables, columns, text boxes and icons, which applicant tracking systems can misread.</li><li>Send a PDF unless the employer asks for Word. Name it like "Your Name - CV".</li><li>Use the advert's own wording where it is true, and keep date formats consistent.</li><li>Keep a master CV with everything, then tailor a copy per role.</li></ul></details>
 <details class="gd"><summary><b>Career change, gaps or little experience</b></summary><ul><li>Lead with a summary that explains your direction in one line.</li><li>Put transferable skills, projects, volunteering and courses where experience would go.</li><li>Explain a gap in one honest line, for example a career break or study. Years alone are fine instead of months.</li><li>Use the advert questions in section 5 to find evidence you may have overlooked.</li></ul></details>
-<details class="gd"><summary><b>Keep your CV current: questions to ask every three months</b></summary><ul><li>What did I finish, launch or improve?</li><li>What did I save: time, money or errors?</li><li>How many people, customers or records did I handle?</li><li>What new tools or methods did I learn?</li><li>Did I get praise, an award or extra responsibility?</li><li>Has my title, scope or team changed?</li></ul><p>Add each answer with the achievement builder.</p></details>
+<details class="gd"><summary><b>Keep your CV current: questions to ask every three months</b></summary><ul><li>What did I finish, launch or improve?</li><li>What did I save: time, money or errors?</li><li>How many people, customers or records did I handle?</li><li>What new tools or methods did I learn?</li><li>Did I get praise, an award or extra responsibility?</li><li>Has my title, scope or team changed?</li></ul><p>Add each answer with the achievement builder. Or log it as a win in the Career tab and use Add to CV.</p></details>
 <details class="gd"><summary><b>Before you apply checklist</b></summary><ul><li>The advert is still open and you meet the must-haves.</li><li>The company name and role are correct in the cover letter.</li><li>Your contact details and links are right.</li><li>Numbers and dates match across your CV and cover letter.</li><li>The file is named properly and opens cleanly.</li><li>A follow-up date is set in Applications.</li></ul></details></section>
+<section class="panel" id="p7"><h2>Career</h2>
+<p class="hint">Your long-term career record: goals, wins, skills, network, reviews, personal brand and pay. Wins and skills feed straight into your CV, and your applications live in the Applications tab.</p>
+<div class="seg" id="lgnav" style="margin-top:10px"></div>
+<p class="hint" id="lgmsg" role="status"></p>
+<div id="lgbody"></div></section>
 </main>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const KEY='tailor.v1';
-const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:'',url:'',why:''},apps:[],profiles:[],pi:-1,js:{what:'',where:'',days:'7',remote:false},ans:{},gd:{}});
+const blank=()=>({p:{name:'',title:'',email:'',phone:'',loc:'',links:'',summary:'',skills:'',extra:''},exp:[{role:'',co:'',dates:'',bullets:''}],edu:[{deg:'',school:'',dates:''}],job:{title:'',co:'',desc:'',url:'',why:''},apps:[],profiles:[],pi:-1,js:{what:'',where:'',days:'7',remote:false},ans:{},gd:{},ledger:{goals:[],network:[],skills:[],wins:[],reviews:[],comp:[],path:null,branding:null,presence:null}});
 let S=blank(),mode='resume';
 try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(blank(),JSON.parse(r))}catch(e){}
 const save=()=>{try{if(S.profiles&&S.profiles[S.pi])Object.assign(S.profiles[S.pi],JSON.parse(JSON.stringify({p:S.p,exp:S.exp,edu:S.edu})));localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -192,11 +243,11 @@ document.addEventListener('click',e=>{
  if(d.cal){const[id,k]=d.cal.split(':'),x=S.apps.find(a=>String(a.id)===id);if(x)out(ics(x,k))}
  if(d.m){mode=d.m;$$('#seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===mode));gen()}
 });
-function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();if(n==4)apps();if(n==5)jobsOpen();if(n==6)guideOpen();window.scrollTo(0,0)}
+function tab(n){$$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===String(n)));$$('.panel').forEach(p=>p.classList.toggle('on',p.id==='p'+n));if(n==3)gen();if(n==4)apps();if(n==5)jobsOpen();if(n==6)guideOpen();if(n==7)careerOpen();window.scrollTo(0,0)}
 $('#go').onclick=()=>tab(3);
 $('#pr').onclick=()=>window.print();
 $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#doc').innerText);$('#cp').textContent='Copied'}catch(e){$('#cp').textContent='Select the text and copy manually'}setTimeout(()=>$('#cp').textContent='Copy text',1800)};
-$('#clr').onclick=()=>{if(confirm('Clear all saved details and the job?')){S=blank();save();forms()}};
+$('#clr').onclick=()=>{if(confirm('Clear everything saved in Tailor on this device? That includes your details, applications, profiles and career records. Back up first if unsure.')){S=blank();save();forms()}};
 const LB='tailor.lastBackup';
 function bkStatus(){let t='';try{t=localStorage.getItem(LB)||''}catch(e){}const el=$('#bkmsg');if(!t){el.textContent='No backup yet.';return}const d=new Date(+t),days=Math.floor((Date.now()-d)/864e5);el.textContent='Last backup: '+d.toLocaleDateString()+(days>=14?'. It has been a while, so back up again.':'.')}
 async function backup(){
@@ -213,7 +264,7 @@ $('#bkcopy').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stri
 $('#bkpaste').onclick=()=>{const t=prompt('Paste your backup text');if(!t)return;try{const d=JSON.parse(t);if(!d.p||!d.exp)throw 0;if((S.p.name||S.exp.some(e=>e.role))&&!confirm('Replace your current details with this backup?'))return;S=Object.assign(blank(),d);save();forms()}catch(x){alert('That text is not a Tailor backup.')}};
 $('#imp').onclick=()=>$('#file').click();
 $('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(!d.p||!d.exp)throw 0;if((S.p.name||S.exp.some(e=>e.role))&&!confirm('Replace your current details with this backup?'))return;S=Object.assign(blank(),d);save();forms()}catch(x){alert('That file is not a Tailor backup.')}})};
-$('#ex').onclick=()=>{S=Object.assign(blank(),{p:{name:'Alex Morgan',title:'Operations Analyst',email:'alex@example.com',phone:'07700 900123',loc:'Manchester, UK',links:'linkedin.com/in/alexmorgan',summary:'',skills:'Excel, SQL, Power BI, stakeholder reporting, process improvement, Python, project coordination',extra:'Lean Six Sigma Green Belt. Languages: English, Spanish.'},exp:[{role:'Operations Analyst',co:'Northway Logistics',dates:'2022 to present',bullets:'Built Power BI dashboards that cut weekly reporting time by 6 hours\nReduced delivery errors 18% by redesigning the dispatch checklist\nWrote SQL queries to track on-time performance across 12 depots\nSupported team meetings and general admin'},{role:'Coordinator',co:'Brightside Retail',dates:'2019 to 2022',bullets:'Coordinated stock projects across 5 stores\nTrained 14 new starters on inventory systems'}],edu:[{deg:'BSc Business Management',school:'University of Salford',dates:'2016 to 2019'}],job:{title:'Senior Data Analyst',co:'Acme Freight',desc:'We need a Senior Data Analyst to own reporting and analytics for our operations team. You will build dashboards in Power BI and Tableau, write SQL daily, and present insights to stakeholders. 3+ years experience required. Python or R is a plus. Experience with process improvement and forecasting is desirable. Strong communication skills and ownership of projects.'}});save();forms()};
+$('#ex').onclick=()=>{if((S.p.name||S.apps.length||S.exp.some(e=>e.role||e.co)||['goals','wins','skills','network'].some(k=>((S.ledger||{})[k]||[]).length))&&!confirm('Loading the example replaces everything saved on this device. Continue?'))return;S=Object.assign(blank(),{p:{name:'Alex Morgan',title:'Operations Analyst',email:'alex@example.com',phone:'07700 900123',loc:'Manchester, UK',links:'linkedin.com/in/alexmorgan',summary:'',skills:'Excel, SQL, Power BI, stakeholder reporting, process improvement, Python, project coordination',extra:'Lean Six Sigma Green Belt. Languages: English, Spanish.'},exp:[{role:'Operations Analyst',co:'Northway Logistics',dates:'2022 to present',bullets:'Built Power BI dashboards that cut weekly reporting time by 6 hours\nReduced delivery errors 18% by redesigning the dispatch checklist\nWrote SQL queries to track on-time performance across 12 depots\nSupported team meetings and general admin'},{role:'Coordinator',co:'Brightside Retail',dates:'2019 to 2022',bullets:'Coordinated stock projects across 5 stores\nTrained 14 new starters on inventory systems'}],edu:[{deg:'BSc Business Management',school:'University of Salford',dates:'2016 to 2019'}],job:{title:'Senior Data Analyst',co:'Acme Freight',desc:'We need a Senior Data Analyst to own reporting and analytics for our operations team. You will build dashboards in Power BI and Tableau, write SQL daily, and present insights to stakeholders. 3+ years experience required. Python or R is a plus. Experience with process improvement and forecasting is desirable. Strong communication skills and ownership of projects.'}});save();forms()};
 const STOP=new Set('the and for you your with are our will that this from have has can all any not but who what who they their them its was were been being more most also into over about such per out one two use used using able etc via within across including include role team work working experience years year ability strong good great looking join help well new well must should may might would could than then these those other each both while where when which how why able need needs required requirements responsibilities skills plus desirable preferred company business candidate candidates position job opportunity benefits salary apply'.split(' '));
 const norm=w=>w.toLowerCase().replace(/[^a-z0-9+#]/g,'').replace(/s$/,'');
 const terms=t=>(String(t).toLowerCase().match(/[a-z][a-z0-9+#.\-]{1,}/g)||[]).map(w=>w.replace(/[.\-]+$/,'')).filter(w=>w.length>2&&!STOP.has(w));
@@ -246,7 +297,7 @@ function report(a){
  $('#report').innerHTML=`<h2>Fit check: ${esc(a.v[0])}</h2><div class="score"><b>${a.score}%</b><div class="bar" role="img" aria-label="${a.score} percent keyword match"><i style="width:${a.score}%"></i></div></div><p>${esc(a.v[1])}</p>
  <p><b>Matched (${a.matched.length})</b><br>${a.matched.map(k=>`<span class="chip">${esc(k)}</span>`).join('')||'None yet'}</p>
  <p><b>Not found in your details (${a.missing.length})</b><br>${a.missing.map(k=>`<span class="chip m">${esc(k)}</span>`).join('')||'None'}</p>
- ${a.missing.length?`<p><b>Turn a gap into evidence</b></p><p class="hint">Only add a line if it is true. It goes onto your most recent role.</p>${a.missing.slice(0,5).map((k,i)=>`<div class="row" style="margin:6px 0"><label style="margin:0;min-width:90px">${esc(k)}</label><input data-evi="${i}" placeholder="Anything close you have done? One true line." style="flex:1;min-width:180px"><button class="btn" data-ev="${i}">Add as bullet</button></div>`).join('')}`:''}
+ ${a.missing.length?`<p><b>Turn a gap into evidence</b></p><p class="hint">Only add a line if it is true. It goes onto your most recent role.</p>${a.missing.slice(0,5).map((k,i)=>{const w=lgWinFor(k);return `<div style="margin:6px 0"><div class="row" style="margin:0"><label style="margin:0;min-width:90px">${esc(k)}</label><input data-evi="${i}" placeholder="Anything close you have done? One true line." style="flex:1;min-width:180px"><button class="btn" data-ev="${i}">Add as bullet</button></div>${w?`<div class="hint">You logged a win that mentions this: "${esc(lgWinBullet(w).slice(0,120))}" <button class="btn" data-lgwin="${esc(w.id)}">Add it to my CV</button></div>`:''}</div>`}).join('')}`:''}
  ${a.tips.length?`<p><b>Suggestions</b></p><ul class="tips">${a.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
  <p class="hint">This is a keyword comparison, so it cannot confirm a role is perfect. Pay, culture, seniority and growth still need your judgement. Before applying: check the closing date, confirm you meet any must-have, and tailor the cover letter.</p>`;
 }
@@ -259,7 +310,7 @@ function gen(){
  const summary=p.summary.trim()||`${p.title||'Professional'} with experience in ${(topSk.length?topSk:skills()).slice(0,4).join(', ')||'a range of areas'}${S.job.title?`, applying for the ${S.job.title} role${S.job.co?' at '+S.job.co:''}`:''}.`;
  if(mode==='prep'){
   if(!S.job.desc.trim()){$('#doc').innerHTML='<div>Paste a job description in step 2 to build interview prep.</div>';return}
-  const B=S.exp.flatMap(e=>lines(e.bullets)),ev=k=>B.find(b=>norm(b).includes(norm(k)));
+  const B=S.exp.flatMap(e=>lines(e.bullets)),W=(((S.ledger||{}).wins)||[]).map(w=>w.title+(w.notes?': '+w.notes:'')),ev=k=>B.find(b=>norm(b).includes(norm(k)))||W.find(b=>norm(b).includes(norm(k)));
   const q=(t,tip)=>`<div class="q">${esc(t)}</div><div>${tip}</div>`,co=S.job.co||'this company',t3=a.matched.slice(0,3).join(', ');
   let h=`<h3>Interview prep: ${esc(S.job.title||'the role')}${S.job.co?', '+esc(S.job.co):''}</h3><div class="ct">Answer with Situation, Task, Action, Result. Aim for about two minutes each. Edit anything below.</div><h4>OPENERS</h4>`;
   h+=q('Tell me about yourself.',esc(`Present: ${p.title||'your current role'}${S.exp[0]&&S.exp[0].co?' at '+S.exp[0].co:''}. Past: one strength that got you here. Future: why ${S.job.title||'this role'} is the next step.`));
@@ -379,16 +430,16 @@ const up=$('#up');['dragover','drop'].forEach(ev=>up.addEventListener(ev,e=>{e.p
 /* ---- Application tracker ---- */
 const ST=['Saved','Applied','Interview','Offer','Rejected','Withdrawn'],ACT=['Applied','Interview'];let flt='All';
 const today=()=>new Date().toISOString().slice(0,10),inDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
-function newApp(o){S.apps.unshift(Object.assign({id:Date.now()+Math.random(),co:'',role:'',url:'',status:'Applied',date:today(),follow:inDays(7),notes:'',score:'',desc:'',int:'',prof:''},o));save()}
+function newApp(o){S.apps.unshift(Object.assign({id:Date.now()+Math.random(),co:'',role:'',url:'',status:'Applied',date:today(),follow:inDays(7),notes:'',score:'',desc:'',int:'',prof:'',contact:''},o));save()}
 function apps(){
  const A=S.apps,t=today(),isDue=a=>a.follow&&a.follow<=t&&ACT.includes(a.status);
  $('#aflt').innerHTML=['All',...ST].map(s=>`<button class="btn" data-f="${s}" aria-pressed="${flt===s}">${s}${s==='All'?'':' ('+A.filter(a=>a.status===s).length+')'}</button>`).join('');
  const due=A.filter(isDue).length;
  $('#asum').textContent=A.length?`${A.length} total, ${A.filter(a=>ACT.includes(a.status)).length} active${due?`, ${due} follow-up${due>1?'s':''} due`:''}.`:'No applications yet. Log one from the Fit and documents tab, or add one here.';
- $('#alist').innerHTML=A.filter(a=>flt==='All'||a.status===flt).map(a=>{const f=(l,k,type)=>`<div><label>${l}</label><input ${type?`type="${type}"`:''} data-a="${a.id}" data-k="${k}" value="${esc(a[k])}"></div>`;
+ $('#alist').innerHTML='<datalist id="lgnet">'+(((S.ledger||{}).network)||[]).map(n=>'<option value="'+esc(n.name)+'">').join('')+'</datalist>'+A.filter(a=>flt==='All'||a.status===flt).map(a=>{const f=(l,k,type)=>`<div><label>${l}</label><input ${type?`type="${type}"`:''} data-a="${a.id}" data-k="${k}" value="${esc(a[k])}"></div>`;
   return `<div class="item"><div class="grid">${f('Role','role')}${f('Company','co')}
   <div><label>Status</label><select data-a="${a.id}" data-k="status" style="width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit">${ST.map(s=>`<option${s===a.status?' selected':''}>${s}</option>`).join('')}</select></div>
-  ${f('Date applied','date','date')}${f('Follow up on','follow','date')}${f('Interview date and time','int','datetime-local')}${f('Link to advert','url')}
+  ${f('Date applied','date','date')}${f('Follow up on','follow','date')}${f('Interview date and time','int','datetime-local')}${f('Link to advert','url')}<div><label>Contact or referrer</label><input list="lgnet" data-a="${a.id}" data-k="contact" value="${esc(a.contact||'')}"></div>
   <div style="grid-column:1/-1"><label>Notes (contacts, salary, interview dates)</label><textarea data-a="${a.id}" data-k="notes">${esc(a.notes)}</textarea></div></div>
   <div class="row">${a.prof?`<span class="chip">${esc(a.prof)}</span>`:''}${a.score!==''?`<span class="chip">Fit ${esc(a.score)}%</span>`:''}${isDue(a)?'<span class="chip m">Follow-up due</span>':''}${/^https?:/.test(a.url||'')?`<a class="btn" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open advert</a>`:''}${a.follow?`<button class="btn" data-cal="${a.id}:f">Follow-up to calendar</button>`:''}${a.int?`<button class="btn" data-cal="${a.id}:i">Interview to calendar</button>`:''}${a.desc?`<button class="btn" data-reuse="${a.id}">Reuse this job</button>`:''}<button class="btn" data-adel="${a.id}">Delete</button></div></div>`}).join('');
 }
@@ -398,7 +449,7 @@ $('#logapp').onclick=()=>{const b=$('#logapp'),say=m=>{b.textContent=m;setTimeou
  if(S.apps.some(a=>a.role===S.job.title&&a.co===S.job.co&&a.desc===S.job.desc)){say('Already logged');return}
  newApp({role:S.job.title,co:S.job.co,score:analyse().score,desc:S.job.desc,url:S.job.url||'',prof:(S.profiles[S.pi]||{}).n||''});say('Logged. See tab 4')};
 $('#acsv').onclick=async()=>{const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
- const rows=[['Role','Company','Status','Applied','Follow-up','Fit %','Link','Notes'],...S.apps.map(a=>[a.role,a.co,a.status,a.date,a.follow,a.score,a.url,a.notes])];
+ const rows=[['Role','Company','Status','Applied','Follow-up','Fit %','Link','Contact','Notes'],...S.apps.map(a=>[a.role,a.co,a.status,a.date,a.follow,a.score,a.url,a.contact||'',a.notes])];
  const f=new File([rows.map(r=>r.map(q).join(',')).join('\n')],'applications.csv',{type:'text/csv'});
  out(f)};
 /* ---- Profiles, downloads, calendar ---- */
@@ -690,6 +741,190 @@ document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)r
  if(d.greqadd!==undefined){const inp=document.querySelector('[data-greq="'+d.greqadd+'"]'),v=inp&&inp.value.trim(),i=+($('#greqrole')||{}).value;if(v&&S.exp[i]){addBullet(i,v);inp.value='';t.textContent='Added';gHealth();gTailor()}}
  if(d.gcp){copyTxt((S.ans||{})[d.gcp]||'',t)}
 });
+/* ---- Career: the Career Ledger merged into Tailor ---- */
+function lgWinFor(k){const n=norm(k);return(((S.ledger||{}).wins)||[]).find(w=>terms(w.title+' '+(w.notes||'')).map(norm).includes(n))}
+function lgWinBullet(w){const t=String(w.title||'').trim().replace(/[.\s]+$/,''),n=String(w.notes||'').trim().replace(/\s+/g,' ').replace(/[.\s]+$/,'');return n&&n.length<=160?t+': '+n:t}
+function lgAddBullet(text,ri){if(!S.exp.length)S.exp.push({role:'',co:'',dates:'',bullets:''});const i=S.exp[ri]?ri:0,cur=lines(S.exp[i].bullets);if(cur.some(b=>b.toLowerCase()===text.toLowerCase()))return false;S.exp[i].bullets=cur.concat(text).join('\n');save();lists();return true}
+(function(){
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+const LKEYS=['goals','network','skills','wins','reviews','comp'];
+function L(){if(!S.ledger||typeof S.ledger!=='object')S.ledger={};const l=S.ledger;LKEYS.forEach(k=>{if(!Array.isArray(l[k]))l[k]=[]});['path','branding','presence'].forEach(k=>{if(l[k]===undefined)l[k]=null});return l}
+const settings=()=>{try{return Object.assign({workerUrl:'',token:''},JSON.parse(localStorage.getItem('ledger-settings')||'{}'))}catch(e){return{workerUrl:'',token:''}}};
+const fmtDate=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})};
+const val=id=>{const e=document.getElementById(id);return e?e.value:''};
+const setv=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v};
+const say=t=>{const m=$('#lgmsg');if(m)m.textContent=t||''};
+const inMotion=()=>S.apps.filter(a=>!['Rejected','Withdrawn'].includes(a.status));
+const empty=(t,s)=>`<div class="lg-empty"><b>${t}</b>${s}</div>`;
+const G=t=>`<details class="gd"><summary><b>How to use this</b></summary><p>${t}</p></details>`;
+const F=(id,label,inner,wide)=>`<div${wide?' style="grid-column:1/-1"':''}><label for="${id}">${label}</label>${inner}</div>`;
+const inp=(id,ph,type,extra)=>`<input id="${id}"${type?` type="${type}"`:''}${ph?` placeholder="${E(ph)}"`:''} ${extra||''}>`;
+const sel=(id,opts,cur)=>`<select id="${id}">${opts.map(o=>`<option${o===cur?' selected':''}>${E(o)}</option>`).join('')}</select>`;
+const ta=(id,ph,h)=>`<textarea id="${id}" placeholder="${E(ph)}"${h?` style="min-height:${h}px"`:''}></textarea>`;
+const form=(id,body,saveAct,saveLbl)=>`<div class="lg-form" id="lg-form-${id}" hidden><div class="grid">${body}</div><div class="row"><button class="btn" data-lg="toggle" data-lgid="${id}">Cancel</button><button class="btn pri" data-lg="${saveAct}">${saveLbl}</button></div></div>`;
+const bar=(pills,addId,addLbl)=>`<div class="row">${pills||''}<button class="btn pri" data-lg="toggle" data-lgid="${addId}">${addLbl}</button></div>`;
+let view='overview',goalF='All',paMode='target';
+const VIEWS=[['overview','Overview'],['goals','Goals'],['path','Path advisor'],['pipeline','Applications'],['network','Network'],['skills','Skills'],['wins','Wins'],['reviews','Reviews'],['brand','Personal brand'],['comp','Compensation'],['settings','Settings']];
+function counts(){const l=L();return{goals:l.goals.filter(g=>g.status==='Active').length,pipeline:inMotion().length,network:l.network.length,skills:l.skills.length,wins:l.wins.length,reviews:l.reviews.length,comp:l.comp.length}}
+function nav(){const c=counts();$('#lgnav').innerHTML=VIEWS.map(([k,n])=>`<button class="btn" data-lg="v" data-lgid="${k}" aria-pressed="${view===k}">${n}${c[k]?' ('+c[k]+')':''}</button>`).join('')}
+const SK={},FILL={};
+SK.overview=()=>'<div id="lg-ov"></div>';
+SK.goals=()=>G('Keep this to 3 to 5 goals at a time. A goal works best when it is specific enough that you would know the day you hit it: "Promotion to Senior Analyst by Q2" rather than "grow my career". Use Cycle status to move a goal from Active to Achieved to Paused, and revisit stale ones every few months.')
+ +bar('<div class="seg" id="lg-gf"></div>','goals','+ Add goal')
+ +form('goals',F('lg-g-title','Title',inp('lg-g-title','e.g. Promotion to Senior Analyst'))+F('lg-g-category','Category',sel('lg-g-category',['Role / Title','Skill','Compensation','Network','Transition','Other']))+F('lg-g-date','Target date',inp('lg-g-date','','date'))+F('lg-g-status','Status',sel('lg-g-status',['Active','Achieved','Paused']))+F('lg-g-notes','Notes',ta('lg-g-notes','Why this matters, what success looks like'),1),'save-goal','Save goal')+'<div id="lg-goals-list"></div>';
+SK.path=()=>{const pi=(L().path||{}).inputs||{},cur=pi.current||((S.p.title||'')+((S.exp[0]||{}).co?' at '+S.exp[0].co:'')),tg=pi.target||(paMode==='target'?(S.job.title||S.js.what||''):'');
+ return `<details class="gd"><summary><b>How to use this</b></summary><p id="lg-pa-guide"></p></details>
+ <div class="seg" style="margin:10px 0"><button class="btn" data-lg="pamode" data-lgid="target" aria-pressed="${paMode==='target'}">I have a clear target</button><button class="btn" data-lg="pamode" data-lgid="explore" aria-pressed="${paMode==='explore'}">I have an interest, not sure where to start</button></div>
+ <div class="grid">${F('lg-pa-current','Current role or situation',inp('lg-pa-current','e.g. Operations analyst, 3 years, logistics','','value="'+E(cur)+'"'))}${F('lg-pa-target','<span id="lg-pa-tl"></span>',inp('lg-pa-target','','','value="'+E(tg)+'"'))}${F('lg-pa-industry','Industry or field (optional)',inp('lg-pa-industry','e.g. Logistics, healthcare, fintech','','value="'+E(pi.industry||'')+'"'))}${F('lg-pa-timeframe','Timeframe (optional)',inp('lg-pa-timeframe','e.g. 18 months, 3 to 5 years','','value="'+E(pi.timeframe||'')+'"'))}
+ <div style="grid-column:1/-1"><label for="lg-pa-constraints">Anything else worth knowing (optional)</label><textarea id="lg-pa-constraints" placeholder="Constraints, preferences, things you have already tried">${E(pi.constraints||'')}</textarea></div></div>
+ <div class="row"><button class="btn pri" id="lg-pa-go" data-lg="gen-path">Generate path</button></div><div id="lg-path-res"></div>`};
+SK.network=()=>G('Add someone right after a meaningful conversation, not weeks later, because the details fade fast. Tap "Contacted today" whenever you reconnect, so you can spot who has gone quiet. A good rule of thumb: reach out to your closest 10 to 15 contacts at least once a quarter, even with something small. People you add here appear as suggestions in the contact or referrer box on each application.')
+ +bar('','network','+ Add contact')+form('network',F('lg-n-name','Name',inp('lg-n-name','Full name'))+F('lg-n-role','Role or company',inp('lg-n-role','e.g. Ops manager at Acme'))+F('lg-n-tag','Relationship',sel('lg-n-tag',['Mentor','Peer','Recruiter','Referrer','Manager','Other']))+F('lg-n-date','Last contact',inp('lg-n-date','','date'))+F('lg-n-notes','Notes',ta('lg-n-notes','How you met, what to follow up on'),1),'save-contact','Save contact')+'<div id="lg-network-list"></div>';
+SK.skills=()=>G('Rate yourself honestly rather than aspirationally; this is for your own tracking. A rough scale: 1 exposed to it, 2 can do it with help, 3 independent on routine work, 4 handle the hard cases, 5 others come to you for it. Use +1 level when you have genuinely levelled up, and let the gap between current and target tell you where to focus. Use Add to CV skills for the ones you can back up.')
+ +bar('<button class="btn" data-lg="skills2cv">Add all level 3+ to CV skills</button>','skills','+ Add skill')+form('skills',F('lg-sk-name','Skill',inp('lg-sk-name','e.g. SQL'))+F('lg-sk-category','Category',sel('lg-sk-category',['Technical','Leadership','Domain','Communication','Other']))+F('lg-sk-level','Current level (1 to 5)',inp('lg-sk-level','','number','min="1" max="5" value="3"'))+F('lg-sk-target','Target level (1 to 5)',inp('lg-sk-target','','number','min="1" max="5" value="4"'))+F('lg-sk-notes','Notes',ta('lg-sk-notes','How you are building it: course, project, mentor'),1),'save-skill','Save skill')+'<div id="lg-skills-list"></div>';
+SK.wins=()=>G('Log a win within a day or two of it happening, or you will have forgotten most of them by review season. Include a number where you can (time saved, revenue, users, team size), because specifics are what make a bullet point convincing. Then use Add to CV to put it on a role in your CV. Aim for at least one entry every couple of weeks.')
+ +`<div class="row" style="margin:6px 0"><label for="lg-wrole" style="margin:0">Add wins to this CV role</label><select id="lg-wrole"></select></div>`
+ +bar('','wins','+ Log a win')+form('wins',F('lg-w-title','Title',inp('lg-w-title','e.g. Shipped the new dispatch checklist'))+F('lg-w-date','Date',inp('lg-w-date','','date'))+F('lg-w-notes','Impact or detail',ta('lg-w-notes','What happened, what changed, numbers if you have them'),1)+F('lg-w-tags','Tags (comma separated, optional)',inp('lg-w-tags','e.g. leadership, shipped, metrics'))+F('lg-w-goal','Related goal (optional)','<select id="lg-w-goal"></select>'),'save-win','Save win')+'<div id="lg-wins-list"></div>';
+SK.reviews=()=>G('Before a review, skim your Wins from the period and pull the strongest 4 to 6 into your self-assessment. After the review, log the feedback you actually got and your rating. That record turns "I think I am doing well" into evidence for your next negotiation or promotion case.')
+ +bar('','reviews','+ Add review')+form('reviews',F('lg-r-period','Period',inp('lg-r-period','e.g. H2 2026'))+F('lg-r-date','Date',inp('lg-r-date','','date'))+F('lg-r-notes','Self-assessment or prep notes',ta('lg-r-notes','Key themes, feedback received, rating, focus for next cycle',90),1),'save-review','Save review')+'<div id="lg-reviews-list"></div>';
+SK.brand=()=>{const bi=(L().branding||{}).inputs||{};return G('Your brand is the consistent answer to "what are you known for?" across LinkedIn, your CV and how you introduce yourself. Fill in what you can and draft it. The more your Wins and Skills already reflect, the better the draft. Use the results as a starting point and make them sound like you.')
+ +`<div class="grid" style="margin-top:10px">${F('lg-br-audience','Who you want to reach (optional)',inp('lg-br-audience','e.g. Hiring managers in logistics','','value="'+E(bi.audience||'')+'"'))}${F('lg-br-focus','What you want to be known for (optional)',inp('lg-br-focus','e.g. Turning messy data into decisions','','value="'+E(bi.focus||'')+'"'))}${F('lg-br-tone','Tone',sel('lg-br-tone',['Professional','Confident','Approachable','Concise'],bi.tone||'Professional'))}${F('lg-br-strengths','Key strengths or themes (optional, comma separated)',inp('lg-br-strengths','Leave blank to use your Skills and Wins','','value="'+E(bi.strengths||'')+'"'))}</div>
+ <div class="row"><button class="btn pri" id="lg-br-go" data-lg="gen-brand">Draft my brand</button></div><div id="lg-brand-res"></div><h2>Presence checklist</h2><div id="lg-presence"></div>`};
+SK.comp=()=>G('Log a number every time it changes (a raise, a bonus, a new offer), even if it feels premature. Having the full history in one place makes "here is my trajectory" a credible argument in a negotiation instead of a guess. This stays on your device and in your own backup file.')
+ +bar('','comp','+ Add entry')+form('comp',F('lg-cp-type','Type',sel('lg-cp-type',['Base salary','Raise','Bonus','Equity grant','Offer received','Total comp','Other']))+F('lg-cp-date','Date',inp('lg-cp-date','','date'))+F('lg-cp-amount','Amount',inp('lg-cp-amount','e.g. 38000','number','step="any" inputmode="decimal"'))+F('lg-cp-currency','Currency',inp('lg-cp-currency','e.g. GBP, USD','','value="'+E(((L().comp[0]||{}).currency)||'GBP')+'"'))+F('lg-cp-company','Company or context',inp('lg-cp-company','Current employer, or the company that made the offer'),1)+F('lg-cp-notes','Notes',ta('lg-cp-notes','What changed, negotiation details, equity or bonus included'),1),'save-comp','Save entry')+'<div id="lg-comp-list"></div>';
+SK.settings=()=>{const st=settings();return `<p class="hint">Path advisor and Personal brand use AI through a small proxy you deploy, a Cloudflare Worker. It holds the API key so this page never does. Paste your Worker's URL and the shared token below, then test the connection. These two values stay on this device and are not included in your Tailor backup.</p>
+ <div class="grid" style="margin-top:10px">${F('lg-set-url','Worker URL',inp('lg-set-url','https://your-worker.your-name.workers.dev','','value="'+E(st.workerUrl)+'" autocomplete="off"'),1)}${F('lg-set-token','Shared token',inp('lg-set-token','The LEDGER_TOKEN set on the Worker','password','value="'+E(st.token)+'" autocomplete="off"'),1)}</div>
+ <div class="row"><button class="btn" data-lg="test-conn">Test connection</button><button class="btn pri" data-lg="save-set">Save settings</button></div><div id="lg-test"></div>
+ <h2>Bring in an old Career Ledger backup</h2><p class="hint">Restores a backup file from the standalone Career Ledger. Pipeline entries are added to your Applications. Your Tailor backup (Your details tab) already includes everything in this tab.</p>
+ <div class="row"><button class="btn" data-lg="imp-led">Choose a Ledger backup (.json)</button><input type="file" id="lg-impfile" accept="application/json,.json" hidden></div>`};
+/* ---- fills ---- */
+FILL.overview=()=>{const l=L(),total=l.goals.length+l.network.length+l.skills.length+l.wins.length+l.reviews.length+S.apps.length,now=Date.now(),w90=l.wins.filter(w=>(now-new Date(w.date))/864e5<=90).length,act=l.goals.filter(g=>g.status==='Active').slice(0,5),mo=inMotion().slice(0,6),t=today(),due=a=>a.follow&&a.follow<=t&&ACT.includes(a.status);
+ const wins=l.wins.filter(w=>w.date).sort((a,b)=>a.date.localeCompare(b.date));
+ $('#lg-ov').innerHTML=(total?'':`<div class="lg-box"><b>Start with these three</b><p class="hint">The Career tab works best as a habit. You do not need to fill every section today.</p><ol><li><b>Add 1 or 2 goals.</b> What are you working toward over the next 6 to 12 months?</li><li><b>Log your last win.</b> Something recent you are proud of, even a small one.</li><li><b>Keep Applications and Network up to date.</b> The habit matters more than perfect entries.</li></ol></div>`)
+ +`<div class="lg-stats"><div class="lg-stat"><b>${l.goals.filter(g=>g.status==='Active').length}</b><span>Active goals</span></div><div class="lg-stat"><b>${inMotion().length}</b><span>Roles in motion</span></div><div class="lg-stat"><b>${w90}</b><span>Wins, last 90 days</span></div><div class="lg-stat"><b>${l.network.length}</b><span>People in network</span></div></div>`
+ +`<div class="lg-box"><b>Wins over time</b><div id="lg-chart"></div></div>`
+ +`<div class="lg-two"><div class="lg-box"><b>Active goals</b>${act.length?act.map(g=>`<div class="lg-mini"><span>${E(g.title)}</span><span class="lg-meta">${g.date?fmtDate(g.date):E(g.category)}</span></div>`).join(''):'<p class="hint">No active goals. Add one in Goals.</p>'}</div>
+ <div class="lg-box"><b>Applications in motion</b>${mo.length?mo.map(a=>`<div class="lg-mini"><span>${E(a.role)}${a.co?' at '+E(a.co):''}</span><span class="lg-meta">${E(a.status)}${due(a)?' <span class="chip m">Follow-up due</span>':''}</span></div>`).join(''):'<p class="hint">Nothing in motion. Log one in Applications.</p>'}<div class="row"><button class="btn" data-lg="v" data-lgid="pipeline">Open Applications</button></div></div></div>`;
+ const box=$('#lg-chart');
+ if(!wins.length){box.innerHTML='<p class="hint">Log a few wins and your progress line will take shape here.</p>';return}
+ const W=1000,H=150,pad=24,ts=wins.map(w=>new Date(w.date).getTime()),mn=Math.min(...ts),sp=Math.max(Math.max(...ts)-mn,1),n=wins.length;
+ const co=wins.map((w,i)=>({x:pad+(wins.length===1?(W-2*pad)/2:(ts[i]-mn)/sp*(W-2*pad)),y:H-pad-((i+1)/n)*(H-2*pad)}));
+ box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:150px;overflow:visible" role="img" aria-label="Cumulative wins logged over time, ${n} in total"><line x1="${pad}" y1="${H-pad+6}" x2="${W-pad}" y2="${H-pad+6}" style="stroke:var(--line)"/><path d="${co.map((c,i)=>(i?'L':'M')+c.x.toFixed(1)+','+c.y.toFixed(1)).join(' ')}" fill="none" style="stroke:var(--acc)" stroke-width="2.5"/>${co.map((c,i)=>`<circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${i===n-1?6:4}" style="fill:${i===n-1?'var(--acc)':'var(--card)'};stroke:var(--acc)" stroke-width="2"/>`).join('')}</svg><p class="hint">${n} win${n>1?'s':''} logged. First: ${E(wins[0].title)} (${fmtDate(wins[0].date)}). Latest: ${E(wins[n-1].title)} (${fmtDate(wins[n-1].date)}).</p>`};
+FILL.goals=()=>{const l=L();$('#lg-gf').innerHTML=['All','Active','Achieved','Paused'].map(f=>`<button class="btn" data-lg="gf" data-lgid="${f}" aria-pressed="${goalF===f}">${f}</button>`).join('');
+ const it=l.goals.filter(g=>goalF==='All'||g.status===goalF);
+ $('#lg-goals-list').innerHTML=it.length?it.map(g=>{const lw=l.wins.filter(w=>w.goalId===g.id);return `<div class="lg-item"><div class="lg-body"><div class="lg-top"><span class="lg-title">${E(g.title)}</span><span class="lg-badge${g.status==='Achieved'?' ok':''}">${E(g.status)}</span><span class="lg-badge acc">${E(g.category)}</span></div>${g.notes?`<div class="lg-notes">${E(g.notes)}</div>`:''}${g.date?`<div class="lg-meta">Target: ${fmtDate(g.date)}</div>`:''}${lw.length?`<div class="lg-meta"><b>${lw.length} win${lw.length>1?'s':''} linked:</b> ${lw.slice(0,3).map(w=>E(w.title)).join(', ')}${lw.length>3?' +'+(lw.length-3)+' more':''}</div>`:''}</div><div class="lg-act"><button class="btn" data-lg="cycle" data-lgid="${g.id}">Cycle status</button><button class="btn dng" data-lg="del" data-lgk="goals" data-lgid="${g.id}">Delete</button></div></div>`}).join(''):empty('No goals yet','Add a goal to start tracking your trajectory.')};
+FILL.path=()=>{$('#lg-pa-tl').textContent=paMode==='explore'?'Area of interest':'Target role or destination';const g=$('#lg-pa-guide');
+ g.textContent=paMode==='explore'?'No clear target needed. Name the area you are curious about. You will get a plan for exploring it cheaply (who to talk to, what to read, small ways to test it) before committing, plus what typical entry points into that field look like.':'This works best when you are specific. "Get better at my job" will not produce much; "Move from operations analyst to senior analyst at a mid-size company in the next 18 months" will. You can regenerate as often as you like. Nothing is saved as a goal until you add a milestone.';
+ $('#lg-pa-target').placeholder=paMode==='explore'?'e.g. Legal tech, consulting, sustainability':"e.g. Senior analyst, or 'switch into product'";
+ const p=L().path,box=$('#lg-path-res');if(!p){box.innerHTML='';return}
+ box.innerHTML=`<div class="lg-box"><b>Assessment</b><p>${E(p.overview||'')}</p></div>`+(p.milestones||[]).map((m,i)=>`<div class="lg-item"><div class="lg-num">${String(i+1).padStart(2,'0')}</div><div class="lg-body"><div class="lg-top"><span class="lg-title">${E(m.title)}</span><span class="lg-meta">${E(m.timeframe||'')}</span></div>${m.description?`<div class="lg-notes">${E(m.description)}</div>`:''}${m.actions&&m.actions.length?`<ul>${m.actions.map(a=>`<li>${E(a)}</li>`).join('')}</ul>`:''}<button class="btn" data-lg="m2g" data-lgid="${E(m.id)}">+ Add as goal</button></div></div>`).join('')};
+FILL.network=()=>{const it=[...L().network].sort((a,b)=>(b.date||'').localeCompare(a.date||'')),old=Date.now()-90*864e5;
+ $('#lg-network-list').innerHTML=it.length?it.map(n=>`<div class="lg-item"><div class="lg-body"><div class="lg-top"><span class="lg-title">${E(n.name)}</span><span class="lg-badge acc">${E(n.tag)}</span>${n.date&&new Date(n.date)<old?'<span class="lg-badge warn">Quiet 90+ days</span>':''}</div>${n.role?`<div class="lg-meta">${E(n.role)}</div>`:''}${n.notes?`<div class="lg-notes">${E(n.notes)}</div>`:''}${n.date?`<div class="lg-meta">Last contact: ${fmtDate(n.date)}</div>`:''}</div><div class="lg-act"><button class="btn" data-lg="touch" data-lgid="${n.id}">Contacted today</button><button class="btn dng" data-lg="del" data-lgk="network" data-lgid="${n.id}">Delete</button></div></div>`).join(''):empty('No contacts yet','Add the people worth staying in touch with.')};
+FILL.skills=()=>{const it=L().skills;$('#lg-skills-list').innerHTML=it.length?it.map(s=>`<div class="lg-item"><div class="lg-body"><div class="lg-top"><span class="lg-title">${E(s.name)}</span><span class="lg-badge acc">${E(s.category)}</span><span class="lg-meta">Level ${s.level} to target ${s.target}</span></div><div class="lg-level" role="img" aria-label="Level ${s.level} of 5">${[1,2,3,4,5].map(i=>`<span class="${i<=s.level?'on':''}"></span>`).join('')}</div>${s.notes?`<div class="lg-notes">${E(s.notes)}</div>`:''}</div><div class="lg-act"><button class="btn" data-lg="bump" data-lgid="${s.id}">+1 level</button><button class="btn" data-lg="skill2cv" data-lgid="${s.id}">Add to CV skills</button><button class="btn dng" data-lg="del" data-lgk="skills" data-lgid="${s.id}">Delete</button></div></div>`).join(''):empty('No skills tracked yet','Add a skill you are building toward.')};
+FILL.wins=()=>{const l=L(),rc=val('lg-wrole');$('#lg-wrole').innerHTML=S.exp.map((e,i)=>`<option value="${i}">${E(e.role||'Role '+(i+1))}${e.co?', '+E(e.co):''}</option>`).join('')||'<option value="-1">Add a role in Your details first</option>';if(rc)setv('lg-wrole',rc);
+ const g=$('#lg-w-goal'),cur=g.value;g.innerHTML='<option value="">No related goal</option>'+l.goals.map(x=>`<option value="${x.id}">${E(x.title)}</option>`).join('');g.value=cur;
+ const it=[...l.wins].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ $('#lg-wins-list').innerHTML=it.length?it.map(w=>{const gt=w.goalId&&(l.goals.find(x=>x.id===w.goalId)||{}).title;return `<div class="lg-item"><div class="lg-body"><div class="lg-top"><span class="lg-title">${E(w.title)}</span></div>${w.notes?`<div class="lg-notes">${E(w.notes)}</div>`:''}<div class="lg-meta">${fmtDate(w.date)}${w.tags&&w.tags.length?' | '+w.tags.map(E).join(', '):''}${gt?` | <button class="lg-link" data-lg="v" data-lgid="goals">${E(gt)}</button>`:''}</div></div><div class="lg-act"><button class="btn" data-lg="win2cv" data-lgid="${w.id}">Add to CV</button><button class="btn dng" data-lg="del" data-lgk="wins" data-lgid="${w.id}">Delete</button></div></div>`}).join(''):empty('No wins logged yet','Log accomplishments as they happen. Future you will thank you at review time.')};
+FILL.reviews=()=>{const it=L().reviews;$('#lg-reviews-list').innerHTML=it.length?it.map(r=>`<div class="lg-item"><div class="lg-body"><div class="lg-top"><span class="lg-title">${E(r.period)}</span></div>${r.notes?`<div class="lg-notes">${E(r.notes)}</div>`:''}${r.date?`<div class="lg-meta">${fmtDate(r.date)}</div>`:''}</div><div class="lg-act"><button class="btn dng" data-lg="del" data-lgk="reviews" data-lgid="${r.id}">Delete</button></div></div>`).join(''):empty('No reviews logged yet','Add a review cycle to keep prep notes in one place.')};
+const PRES=[{k:'linkedin',l:'LinkedIn profile reflects current role and headline',note:'URL'},{k:'resume',l:'CV updated with recent wins',date:1},{k:'portfolio',l:'Portfolio or personal site up to date',note:'URL'}];
+FILL.brand=()=>{const r=(L().branding||{}).result,box=$('#lg-brand-res');
+ box.innerHTML=r?`<div class="lg-box"><b>Headline options</b>${(r.headline_options||[]).map((h,i)=>`<div class="lg-mini"><span>${E(h)}</span><span class="lg-act"><button class="btn" data-lg="copy" data-lgk="h" data-lgid="${i}">Copy</button><button class="btn" data-lg="use-title" data-lgid="${i}">Use as CV title</button></span></div>`).join('')}</div>
+ <div class="lg-box"><b>Elevator pitch</b><p class="lg-pre">${E(r.elevator_pitch||'')}</p><button class="btn" data-lg="copy" data-lgk="p">Copy</button></div>
+ <div class="lg-box"><b>LinkedIn about section</b><p class="lg-pre">${E(r.linkedin_about||'')}</p><div class="row" style="margin-top:0"><button class="btn" data-lg="copy" data-lgk="a">Copy</button><button class="btn" data-lg="use-about">Use as CV summary</button></div></div>
+ <div class="lg-box"><b>Talking points to lead with</b><ul>${(r.talking_points||[]).map(t=>`<li>${E(t)}</li>`).join('')}</ul></div>`:'';
+ const st=L().presence||{};$('#lg-presence').innerHTML=PRES.map(it=>{const s=st[it.k]||{};return `<div class="row" style="margin:6px 0"><label style="margin:0;display:flex;gap:8px;align-items:center;color:var(--ink);flex:1;min-width:220px"><input type="checkbox" style="width:auto" data-lgp="${it.k}" data-lgfield="done"${s.done?' checked':''}> ${it.l}</label>${it.date?`<input type="date" style="width:auto" data-lgp="${it.k}" data-lgfield="date" value="${E(s.date||'')}" aria-label="Date updated">`:''}${it.note?`<input type="text" style="width:auto;min-width:180px" placeholder="${it.note}" data-lgp="${it.k}" data-lgfield="note" value="${E(s.note||'')}" aria-label="${it.note}">`:''}</div>`}).join('')};
+FILL.comp=()=>{const it=[...L().comp].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ const fa=(a,c)=>{try{return new Intl.NumberFormat(undefined,{style:'currency',currency:c||'GBP',maximumFractionDigits:0}).format(a)}catch(e){return(c||'')+' '+Number(a).toLocaleString()}};
+ $('#lg-comp-list').innerHTML=it.length?it.map((c,i)=>`<div class="lg-item"><div class="lg-body"><div class="lg-top"><span class="lg-amt">${E(fa(c.amount,c.currency))}</span><span class="lg-badge acc">${E(c.type)}</span>${i===0?'<span class="lg-badge ok">Most recent</span>':''}</div>${c.company?`<div class="lg-meta">${E(c.company)}</div>`:''}${c.notes?`<div class="lg-notes">${E(c.notes)}</div>`:''}<div class="lg-meta">${fmtDate(c.date)}</div></div><div class="lg-act"><button class="btn dng" data-lg="del" data-lgk="comp" data-lgid="${c.id}">Delete</button></div></div>`).join(''):empty('No compensation history yet','Log your current base, or the last offer or raise you got, to start the record.')};
+FILL.settings=()=>{};FILL.pipeline=()=>{};
+function show(v){view=v;nav();$('#lgbody').innerHTML=SK[v]?SK[v]():'';(FILL[v]||(()=>{}))()}
+function refresh(){nav();(FILL[view]||(()=>{}))()}
+/* ---- AI via your Worker ---- */
+async function ask(prompt,max,ms){const st=settings();ms=ms||45000;if(!st.workerUrl)throw new Error('No Worker URL set. Open Settings in this tab and paste your Cloudflare Worker URL first.');
+ const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);let r,txt;
+ try{r=await fetch(st.workerUrl,{method:'POST',headers:{'Content-Type':'application/json','X-Ledger-Token':st.token||''},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:max||1500,messages:[{role:'user',content:prompt}]}),signal:c.signal});txt=await r.text()}
+ catch(e){if(e.name==='AbortError')throw new Error('Timed out after '+Math.round(ms/1000)+'s waiting for a response.');throw new Error('Could not reach your Worker. Check the URL, that it allows requests from this site, and that you are online.')}
+ finally{clearTimeout(t)}
+ let d;try{d=JSON.parse(txt)}catch(e){throw new Error('Worker returned a non-JSON response (status '+r.status+'): '+txt.slice(0,150))}
+ if(!r.ok||d.error)throw new Error(d.error&&d.error.message?d.error.message:typeof d.error==='string'?d.error:'Request failed with status '+r.status);
+ const out=(d.content||[]).map(b=>b.text||'').join('\n').trim();if(!out)throw new Error('The model returned an empty response. Try again.');return out}
+function xjson(t){let c=t.replace(/```json|```/g,'').trim();const a=c.indexOf('{'),b=c.lastIndexOf('}');if(a<0||b<0)throw new Error('Response was not in the expected format: '+t.slice(0,150));try{return JSON.parse(c.slice(a,b+1))}catch(e){throw new Error('Could not parse the response (malformed JSON from the model). Try again.')}}
+const errBox=(h,m,again)=>`<div class="lg-err"><b>${h}</b><div>${E(m)}</div>${again?`<div class="row"><button class="btn" data-lg="${again}">Try again</button></div>`:''}</div>`;
+const spin=t=>`<div class="lg-load"><span class="lg-spin"></span> ${t}</div>`;
+async function genPath(){const cur=val('lg-pa-current').trim(),tg=val('lg-pa-target').trim(),ind=val('lg-pa-industry').trim(),tf=val('lg-pa-timeframe').trim(),cs=val('lg-pa-constraints').trim(),box=$('#lg-path-res');
+ if(!cur||!tg){box.innerHTML=errBox('More detail needed','Fill in at least your current situation and your '+(paMode==='explore'?'area of interest':'target')+'.');return}
+ const btn=$('#lg-pa-go');btn.disabled=true;box.innerHTML=spin('Working out a realistic path...');
+ const shape='{\n  "overview": "2-3 sentence honest take",\n  "milestones": [\n    {\n      "title": "short milestone name",\n      "timeframe": "e.g. Months 1-3",\n      "description": "1-2 sentences on what this milestone is and why it matters",\n      "actions": ["concrete action 1", "concrete action 2", "concrete action 3"]\n    }\n  ]\n}';
+ const prompt=paMode==='explore'?`You are a candid, experienced career advisor. Someone has an interest in a field or area but no clear target role yet, and doesn't know how to start. Help them explore it properly before committing to anything. Propose 4-6 concrete milestones in order, covering: low-cost ways to test the interest (informational interviews, reading, communities, small projects), what the typical entry points and roles into this area actually look like, what skills or credentials genuinely matter versus what's optional, and a clear decision point where they reassess whether to pursue it further.\n\nCurrent situation: ${cur}\nArea of interest: ${tg}\nIndustry/field context: ${ind||'not specified'}\nTimeframe: ${tf||'not specified'}\nOther context: ${cs||'none'}\n\nRespond with ONLY a JSON object, no markdown fences, no preamble, in exactly this shape:\n${shape}\nKeep it realistic and specific, not generic career advice. Early milestones should be genuinely low-commitment (talking to people, reading, small experiments) before anything that requires a big leap. 4 to 6 milestones total.`
+ :`You are a candid, experienced career advisor. Based on the details below, propose a realistic career path with 4-6 concrete milestones in order.\n\nCurrent situation: ${cur}\nTarget: ${tg}\nIndustry/field: ${ind||'not specified'}\nTimeframe: ${tf||'not specified'}\nOther context: ${cs||'none'}\n\nRespond with ONLY a JSON object, no markdown fences, no preamble, in exactly this shape:\n${shape}\nKeep it realistic and specific to the person's situation, not generic career advice. 4 to 6 milestones total.`;
+ try{const p=xjson(await ask(prompt,2000));if(!Array.isArray(p.milestones)||!p.milestones.length)throw new Error('The response had no milestones. Try adding a bit more detail and generate again.');
+  L().path={inputs:{current:cur,target:tg,industry:ind,timeframe:tf,constraints:cs,mode:paMode},overview:p.overview||'',milestones:p.milestones.map(m=>Object.assign({},m,{id:uid()})),generatedAt:new Date().toISOString()};save();FILL.path()}
+ catch(e){box.innerHTML=errBox("Couldn't generate a path",e.message||String(e),'gen-path')}finally{btn.disabled=false}}
+async function genBrand(){const l=L(),au=val('lg-br-audience').trim(),fo=val('lg-br-focus').trim(),tone=val('lg-br-tone');let st=val('lg-br-strengths').trim();
+ if(!st)st=l.skills.slice(0,5).map(s=>s.name).join(', ');
+ const rw=l.wins.slice(0,6).map(w=>w.title+(w.notes?': '+w.notes:'')).join('\n- '),dir=(l.path&&l.path.inputs&&l.path.inputs.target)||(l.goals[0]?l.goals[0].title:'')||S.job.title||'';
+ const btn=$('#lg-br-go'),box=$('#lg-brand-res');btn.disabled=true;box.innerHTML=spin('Drafting your brand...');
+ const prompt=`You are a candid personal-branding advisor helping someone position themselves professionally (LinkedIn, resume, elevator pitch).\n\nWho they want to reach: ${au||'not specified'}\nWhat they want to be known for: ${fo||'not specified'}\nKey strengths/themes: ${st||'not specified — infer reasonable ones from context, or note that more input would help'}\nRecent accomplishments:\n- ${rw||'none provided'}\nCareer direction they're working toward: ${dir||'not specified'}\nTone: ${tone}\n\nRespond with ONLY a JSON object, no markdown fences, no preamble, in exactly this shape:\n{\n  "headline_options": ["headline option 1 (under 12 words, LinkedIn-style)", "headline option 2", "headline option 3"],\n  "elevator_pitch": "a natural-sounding 30-45 second spoken pitch, 3-4 sentences, first person",\n  "linkedin_about": "a 3-5 sentence draft for a LinkedIn About section, first person",\n  "talking_points": ["a specific, evidence-backed strength to lead with in interviews or networking", "another one", "another one"]\n}\nBe specific and grounded in what was actually provided — avoid generic corporate language and buzzwords like "results-driven" or "team player" unless genuinely earned by the context given.`;
+ try{const r=xjson(await ask(prompt,1500));l.branding={inputs:{audience:au,focus:fo,strengths:st,tone},result:r,generatedAt:new Date().toISOString()};save();FILL.brand()}
+ catch(e){box.innerHTML=errBox("Couldn't draft your brand",e.message||String(e),'gen-brand')}finally{btn.disabled=false}}
+async function testConn(){const box=$('#lg-test');box.innerHTML=spin('Testing connection...');const t0=Date.now();
+ try{const r=await ask('Reply with exactly the word: OK',20,20000);box.innerHTML=`<div class="lg-ok"><b>Connection working.</b> Response in ${Date.now()-t0}ms: "${E(r.trim().slice(0,50))}"</div>`}
+ catch(e){box.innerHTML=errBox('Connection test failed',e.message||String(e))}}
+/* ---- migration from the standalone Career Ledger on this origin ---- */
+const SM={Researching:'Saved',Applied:'Applied',Interviewing:'Interview',Offer:'Offer',Closed:'Withdrawn'};
+const toApp=x=>({id:Date.now()+Math.random(),co:x.company||'',role:x.role||'',url:x.link||'',status:SM[x.stage]||'Applied',date:x.date||'',follow:'',notes:x.notes||'',score:'',desc:'',int:'',prof:'',contact:x.contact||''});
+function migrate(){if(S.lgMig)return 0;S.lgMig=1;let n=0;
+ try{const l=L(),get=k=>{try{const r=localStorage.getItem('ledger-'+k);return r===null?undefined:JSON.parse(r)}catch(e){}};
+  LKEYS.forEach(k=>{const v=get(k);if(Array.isArray(v)&&v.length&&!l[k].length){l[k]=v;n+=v.length}});
+  ['path','branding','presence'].forEach(k=>{const v=get(k);if(v&&!l[k]){l[k]=v;n++}});
+  const p=get('pipeline');if(Array.isArray(p)&&p.length&&!S.apps.length){S.apps=p.map(toApp);n+=p.length}}catch(e){}
+ save();return n}
+function importLedger(txt){let d;try{d=JSON.parse(txt)}catch(e){alert('That file is not valid JSON.');return}
+ const inc=d.data||d,keys=[...LKEYS,'path','branding','presence'].filter(k=>inc[k]!==undefined),pipe=Array.isArray(inc.pipeline)?inc.pipeline:[];
+ if(!keys.length&&!pipe.length){alert('No recognisable Career Ledger data found in that file.');return}
+ if(!confirm('This replaces your current '+keys.join(', ')+(pipe.length?' and adds '+pipe.length+' pipeline entr'+(pipe.length>1?'ies':'y')+' to Applications':'')+'. Continue?'))return;
+ const l=L();keys.forEach(k=>{l[k]=inc[k]});
+ let added=0;pipe.forEach(x=>{const a=toApp(x);if(!S.apps.some(y=>y.role===a.role&&y.co===a.co&&y.date===a.date)){S.apps.push(a);added++}});
+ save();refresh();say('Backup restored. '+keys.length+' section'+(keys.length===1?'':'s')+' replaced'+(added?', '+added+' application'+(added>1?'s':'')+' added.':'.'))}
+/* ---- actions ---- */
+const A={
+ v(id){if(id==='pipeline'){tab(4);return}show(id);say('')},
+ toggle(id){const f=$('#lg-form-'+id);if(f)f.hidden=!f.hidden},
+ gf(id){goalF=id;FILL.goals()},
+ 'save-goal'(){const t=val('lg-g-title').trim();if(!t){say('Give the goal a title first.');return}L().goals.unshift({id:uid(),title:t,category:val('lg-g-category'),date:val('lg-g-date'),status:val('lg-g-status'),notes:val('lg-g-notes').trim()});['lg-g-title','lg-g-notes','lg-g-date'].forEach(i=>setv(i,''));A.toggle('goals');save();refresh();say('Goal saved.')},
+ cycle(id){const g=L().goals.find(x=>x.id===id);if(!g)return;const o=['Active','Achieved','Paused'];g.status=o[(o.indexOf(g.status)+1)%3];save();refresh()},
+ del(id,k){const n={goals:'goal',network:'contact',skills:'skill',wins:'win',reviews:'review',comp:'compensation entry'}[k];if(!confirm('Delete this '+n+'? This cannot be undone.'))return;const l=L();l[k]=l[k].filter(x=>x.id!==id);save();refresh()},
+ pamode(id){paMode=id;document.querySelectorAll('[data-lg="pamode"]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lgid===id));FILL.path()},
+ 'gen-path'(){genPath()},
+ m2g(id,_,btn){const p=L().path,m=p&&p.milestones.find(x=>x.id===id);if(!m)return;L().goals.unshift({id:uid(),title:m.title,category:'Transition',date:'',status:'Active',notes:[m.description,m.actions&&m.actions.length?'Next actions: '+m.actions.join('; '):''].filter(Boolean).join(' | ')});save();nav();if(btn){btn.textContent='Added';btn.disabled=true}},
+ 'save-contact'(){const n=val('lg-n-name').trim();if(!n){say('Add a name first.');return}L().network.unshift({id:uid(),name:n,role:val('lg-n-role').trim(),tag:val('lg-n-tag'),date:val('lg-n-date'),notes:val('lg-n-notes').trim()});['lg-n-name','lg-n-role','lg-n-notes','lg-n-date'].forEach(i=>setv(i,''));A.toggle('network');save();refresh();say('Contact saved.')},
+ touch(id){const n=L().network.find(x=>x.id===id);if(n){n.date=today();save();refresh()}},
+ 'save-skill'(){const n=val('lg-sk-name').trim();if(!n){say('Add a skill name first.');return}const c=v=>Math.max(1,Math.min(5,parseInt(v)||1));L().skills.unshift({id:uid(),name:n,category:val('lg-sk-category'),level:c(val('lg-sk-level')),target:c(val('lg-sk-target')),notes:val('lg-sk-notes').trim()});['lg-sk-name','lg-sk-notes'].forEach(i=>setv(i,''));A.toggle('skills');save();refresh();say('Skill saved.')},
+ bump(id){const s=L().skills.find(x=>x.id===id);if(s){s.level=Math.min(5,s.level+1);save();refresh()}},
+ skill2cv(id){const s=L().skills.find(x=>x.id===id);if(!s)return;const n=addSk([s.name]);say(n?'Added "'+s.name+'" to your CV skills.':'"'+s.name+'" is already in your CV skills.')},
+ skills2cv(){const n=addSk(L().skills.filter(s=>s.level>=3).map(s=>s.name));say(n?'Added '+n+' skill'+(n>1?'s':'')+' to your CV skills.':'Nothing new to add. Rate skills at level 3 or above first.')},
+ 'save-win'(){const t=val('lg-w-title').trim();if(!t){say('Give the win a title first.');return}L().wins.unshift({id:uid(),title:t,date:val('lg-w-date')||today(),notes:val('lg-w-notes').trim(),tags:val('lg-w-tags').split(',').map(x=>x.trim()).filter(Boolean),goalId:val('lg-w-goal')||null});['lg-w-title','lg-w-notes','lg-w-tags','lg-w-date'].forEach(i=>setv(i,''));A.toggle('wins');save();refresh();say('Win logged. Use Add to CV to put it on your CV.')},
+ win2cv(id){const w=L().wins.find(x=>x.id===id);if(!w)return;const ri=parseInt(val('lg-wrole'));if(!(ri>=0)&&!S.exp.length){say('Add a role in Your details first.');return}const ok=lgAddBullet(lgWinBullet(w),ri>=0?ri:0),r=S.exp[ri>=0?ri:0];say(ok?'Added to '+(r.role||'your CV')+'. Edit the wording in Your details.':'That line is already on your CV.')},
+ 'save-review'(){const p=val('lg-r-period').trim();if(!p){say('Add the review period first.');return}L().reviews.unshift({id:uid(),period:p,date:val('lg-r-date'),notes:val('lg-r-notes').trim()});['lg-r-period','lg-r-notes','lg-r-date'].forEach(i=>setv(i,''));A.toggle('reviews');save();refresh();say('Review saved.')},
+ 'gen-brand'(){genBrand()},
+ copy(id,k,btn){const r=(L().branding||{}).result||{},t=k==='h'?(r.headline_options||[])[+id]:k==='p'?r.elevator_pitch:r.linkedin_about;copyTxt(t||'',btn)},
+ 'use-title'(id){const h=((L().branding||{}).result||{}).headline_options||[],v=h[+id];if(!v)return;if(S.p.title&&S.p.title!==v&&!confirm('Replace your CV title "'+S.p.title+'" with this headline?'))return;S.p.title=v;save();forms();say('Set as your CV title. Change it in Your details.')},
+ 'use-about'(){const v=((L().branding||{}).result||{}).linkedin_about;if(!v)return;if(S.p.summary&&!confirm('Replace your current CV summary with this text?'))return;S.p.summary=v;save();forms();say('Set as your CV summary. Edit it in Your details so it fits each role.')},
+ 'save-comp'(){const a=parseFloat(val('lg-cp-amount'));if(isNaN(a)){say('Enter an amount first.');return}L().comp.unshift({id:uid(),type:val('lg-cp-type'),date:val('lg-cp-date')||today(),amount:a,currency:val('lg-cp-currency').trim().toUpperCase()||'GBP',company:val('lg-cp-company').trim(),notes:val('lg-cp-notes').trim()});['lg-cp-amount','lg-cp-company','lg-cp-notes','lg-cp-date'].forEach(i=>setv(i,''));A.toggle('comp');save();refresh();say('Entry saved.')},
+ 'save-set'(){try{localStorage.setItem('ledger-settings',JSON.stringify({workerUrl:val('lg-set-url').trim().replace(/\/$/,''),token:val('lg-set-token').trim()}));$('#lg-test').innerHTML='<div class="lg-ok"><b>Saved.</b> Now try Test connection.</div>'}catch(e){say('Could not save settings on this device.')}},
+ 'test-conn'(){testConn()},
+ 'imp-led'(){$('#lg-impfile').click()}
+};
+function addSk(names){const cur=skills(),low=new Set(cur.map(x=>x.toLowerCase())),add=[...new Set(names.filter(n=>n&&!low.has(n.toLowerCase())))];if(!add.length)return 0;S.p.skills=cur.concat(add).join(', ');save();forms();return add.length}
+document.addEventListener('click',e=>{const b=e.target.closest('button[data-lg],button[data-lgwin]');if(!b)return;
+ if(b.dataset.lgwin){const w=((S.ledger||{}).wins||[]).find(x=>x.id===b.dataset.lgwin);if(w){const ok=lgAddBullet(lgWinBullet(w),0);b.textContent=ok?'Added to your CV':'Already on your CV';b.disabled=true;if(ok)gen()}return}
+ const f=A[b.dataset.lg];if(f)f(b.dataset.lgid,b.dataset.lgk,b)});
+document.addEventListener('change',e=>{const t=e.target;
+ if(t.dataset&&t.dataset.lgp){const l=L();if(!l.presence)l.presence={};const p=l.presence[t.dataset.lgp]=l.presence[t.dataset.lgp]||{};p[t.dataset.lgfield]=t.type==='checkbox'?t.checked:t.value;save()}
+ if(t.id==='lg-impfile'){const f=t.files[0];if(f)f.text().then(importLedger);t.value=''}});
+window.careerOpen=function(){const n=migrate(),l=L();if(!$('#lgbody').innerHTML)show(view);else refresh();say(n?'Brought in '+n+' item'+(n>1?'s':'')+' from the Career Ledger already saved on this device.':'')};
+})();
 forms();bkStatus();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
