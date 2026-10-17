@@ -29,6 +29,10 @@ Replace `index.html` in the repo. If the old version sticks, change `V='tailor-v
 ## Features
 - Upload or paste an existing CV to pre-fill your details.
 - Profiles: save different versions of your details (for example "Analyst roles") from the Profile menu on tab 1. Edits update the active profile automatically.
+- Job step (tab 2): upload the job advert as PDF, Word, text or saved web page (or drop it on the box). The text goes into the job description, title and company fill only when the advert labels them, and Tailor reports word limits, closing date and whether essential and desirable criteria are present.
+- Guide tab, word and phrase suggestions: for the job in step 2, Tailor shows the themes the advert stresses with matching action verbs and sentence patterns, lists advert words missing from your CV (write an achievement with it, or add it to skills if you really have it), and suggests rewrites for weak, vague or number-free achievements that you edit and replace in one tap. Rule based, works offline, no AI service.
+- Guide tab, statement and behaviour answer builder: choose an essential criterion or behaviour from the advert, get tailored prompts, split your word limit across Situation, Task, Action and Result, and track the word count. You write the example; Tailor structures it.
+- Answer builder, optional AI help: with your Cloudflare Worker connected, "Give me feedback" reviews your own Situation/Task/Action/Result notes against the criterion without rewriting them, and "Draft from my notes" tightens them into one answer within your word limit. The model is told to use only facts in your notes, never to invent numbers or details, and to leave [brackets] where information is missing. Only your criterion, notes and the advert text are sent, to your own Worker. Check the employer's AI rules first.
 - Fit check with "Turn a gap into evidence" prompts, then Resume, Full CV, Cover letter and Interview prep.
 - Download Word (.docx) or plain text (.txt). Use plain text for application systems that mangle formatted files.
 - Applications tab: statuses, follow-up dates, interview times, notes, CSV export, and calendar reminders (.ics) that open in Calendar on iPhone and Mac.
@@ -49,4 +53,4 @@ Tab 7 holds the full Career Ledger: Overview, Goals, Path advisor, Applications 
 - Wins feed the fit check, interview prep and CV bullets; skills and brand headline/about can be pushed to the CV.
 - AI features (Path advisor, Personal brand) need your own Cloudflare Worker. Enter its URL and token in Career > Settings. These stay on the device and are never included in backups.
 - Old `ledger-*` data and old Ledger backups are imported automatically or via Settings.
-- Service worker cache version: `tailor-v11`.
+- Service worker cache version: `tailor-v14`.
