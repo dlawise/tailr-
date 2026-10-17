@@ -53,4 +53,16 @@ Tab 7 holds the full Career Ledger: Overview, Goals, Path advisor, Applications 
 - Wins feed the fit check, interview prep and CV bullets; skills and brand headline/about can be pushed to the CV.
 - AI features (Path advisor, Personal brand) need your own Cloudflare Worker. Enter its URL and token in Career > Settings. These stay on the device and are never included in backups.
 - Old `ledger-*` data and old Ledger backups are imported automatically or via Settings.
-- Service worker cache version: `tailor-v14`.
+- Service worker cache version: `tailor-v15`.
+
+
+## Using Ollama (local AI on your Mac)
+In Career > Settings, set **AI provider** to Ollama. Path advisor, Personal brand and the answer builder's feedback and drafts then run on your own computer, and nothing is sent anywhere.
+
+1. Install Ollama from ollama.com and open it. In Terminal, pull a model, for example `ollama pull llama3.1:8b`. Bigger models give better writing. The Path advisor and Personal brand need JSON output, which small models sometimes get wrong. If that happens, try again or use a larger model.
+2. **Run Tailor from your own Mac** (the reliable way). Double-click `start-tailor-mac.command`, or in Terminal run `cd` into this folder and then `python3 -m http.server 8080`, and open http://localhost:8080. The first time, macOS may ask you to right-click the file and choose Open, or to install developer tools for Python.
+3. In Career > Settings choose Ollama, keep the address `http://localhost:11434`, press **Find installed models**, tap one, then **Test connection** and **Save settings**.
+
+Why run it locally: a page served over https (such as GitHub Pages) calling `http://localhost` can be blocked by the browser as mixed content, and Ollama only accepts requests from local pages by default. If you do want to keep using the GitHub Pages copy, run `launchctl setenv OLLAMA_ORIGINS "https://YOUR-USERNAME.github.io"` in Terminal, quit and reopen Ollama, and expect that Safari may still block it. Chrome and Edge are more likely to allow it, and may ask your permission.
+
+**Your data is stored per address.** http://localhost:8080 has its own storage, separate from the GitHub Pages copy and from any installed app. Use Back up on the old copy and Restore backup on the new one to move your details. The same applies to AI settings, which are never included in backups, so enter them again in each place you use Tailor.

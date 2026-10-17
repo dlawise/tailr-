@@ -207,8 +207,8 @@ details.gd p,details.gd li{margin:6px 0}
 <div style="grid-column:1/-1"><label for="str"><span id="stlr">Result</span></label><textarea id="str" data-g="st" data-k="r" style="min-height:70px"></textarea></div>
 <div style="grid-column:1/-1"><label for="stp">Your answer so far (read only)</label><textarea id="stp" readonly style="min-height:120px"></textarea></div></div>
 <div class="row"><button class="btn pri" id="stcopy">Copy answer</button><button class="btn" id="stclear">Clear this answer</button></div><p class="hint" id="stmsg" role="status"></p>
-<details class="gd" id="staidet" style="margin-top:10px"><summary><b>Optional: AI help with this answer (uses your Worker)</b></summary>
-<p class="hint">Needs your Cloudflare Worker (Career, then Settings). Your criterion, notes and the advert text are sent to your own Worker and model, nothing else. It works only from the notes in the four boxes and is told never to invent facts, so write rough notes first.</p>
+<details class="gd" id="staidet" style="margin-top:10px"><summary><b>Optional: AI help with this answer (Worker or Ollama)</b></summary>
+<p class="hint">Needs an AI connection (Career, then Settings): your Cloudflare Worker, or Ollama on this computer, in which case nothing leaves your device. Only your criterion, notes and the advert text are sent to that connection. It works only from the notes in the four boxes and is told never to invent facts, so write rough notes first.</p>
 <p class="hint"><b>Check the employer's rules first.</b> Some employers restrict AI help. The GLD advert, for one, says every example must come from your own experience and warns that AI-generated material presented as your own can get an application withdrawn. Feedback mode is the safer choice. If you use a draft, rewrite it in your own voice and make sure every fact is true.</p>
 <div class="row"><button class="btn pri" data-ai="feedback">Give me feedback on my answer</button><button class="btn" data-ai="draft">Draft from my notes</button></div>
 <div id="staires" role="status"></div></details>
@@ -873,7 +873,7 @@ async function stAI(mode){
   notes=[['Situation',g.s],['Task',g.t],['Action',g.a],['Result',g.r]].filter(x=>(x[1]||'').trim()).map(x=>x[0]+': '+x[1].trim()).join('\n'),
   btns=[...document.querySelectorAll('[data-ai]')],A=window.tlAI;
  if(!A){box.textContent='AI help is not available. Reload the page and try again.';return}
- if(!A.settings().workerUrl){box.innerHTML=A.errBox('No Worker connected','Open Career, then Settings, and paste your Cloudflare Worker URL and token. Everything else in Tailor works without it.');return}
+ if(!A.ready()){box.innerHTML=A.errBox('No AI connected','Open Career, then Settings, and either paste your Cloudflare Worker URL and token or choose Ollama and a model. Everything else in Tailor works without it.');return}
  if(!crit){box.innerHTML=A.errBox('Choose a criterion first','Pick or type the criterion or behaviour this answer is for.');return}
  if(wc(notes)<12){box.innerHTML=A.errBox('Add some notes first','Write a few rough lines in the four boxes. The AI only works from facts you supply and will not make any up.');return}
  const adv=(S.job.desc||'').slice(0,3500),cur=wc([g.s,g.t,g.a,g.r].join(' '));
@@ -904,7 +904,8 @@ const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','
 const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
 const LKEYS=['goals','network','skills','wins','reviews','comp'];
 function L(){if(!S.ledger||typeof S.ledger!=='object')S.ledger={};const l=S.ledger;LKEYS.forEach(k=>{if(!Array.isArray(l[k]))l[k]=[]});['path','branding','presence'].forEach(k=>{if(l[k]===undefined)l[k]=null});return l}
-const settings=()=>{try{return Object.assign({workerUrl:'',token:''},JSON.parse(localStorage.getItem('ledger-settings')||'{}'))}catch(e){return{workerUrl:'',token:''}}};
+const settings=()=>{const d={provider:'worker',workerUrl:'',token:'',ollamaUrl:'http://localhost:11434',ollamaModel:''};try{return Object.assign(d,JSON.parse(localStorage.getItem('ledger-settings')||'{}'))}catch(e){return d}};
+const aiReady=()=>{const x=settings();return x.provider==='ollama'?!!x.ollamaModel:!!x.workerUrl};
 const fmtDate=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})};
 const val=id=>{const e=document.getElementById(id);return e?e.value:''};
 const setv=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v};
@@ -947,8 +948,10 @@ SK.brand=()=>{const bi=(L().branding||{}).inputs||{};return G('Your brand is the
  <div class="row"><button class="btn pri" id="lg-br-go" data-lg="gen-brand">Draft my brand</button></div><div id="lg-brand-res"></div><h2>Presence checklist</h2><div id="lg-presence"></div>`};
 SK.comp=()=>G('Log a number every time it changes (a raise, a bonus, a new offer), even if it feels premature. Having the full history in one place makes "here is my trajectory" a credible argument in a negotiation instead of a guess. This stays on your device and in your own backup file.')
  +bar('','comp','+ Add entry')+form('comp',F('lg-cp-type','Type',sel('lg-cp-type',['Base salary','Raise','Bonus','Equity grant','Offer received','Total comp','Other']))+F('lg-cp-date','Date',inp('lg-cp-date','','date'))+F('lg-cp-amount','Amount',inp('lg-cp-amount','e.g. 38000','number','step="any" inputmode="decimal"'))+F('lg-cp-currency','Currency',inp('lg-cp-currency','e.g. GBP, USD','','value="'+E(((L().comp[0]||{}).currency)||'GBP')+'"'))+F('lg-cp-company','Company or context',inp('lg-cp-company','Current employer, or the company that made the offer'),1)+F('lg-cp-notes','Notes',ta('lg-cp-notes','What changed, negotiation details, equity or bonus included'),1),'save-comp','Save entry')+'<div id="lg-comp-list"></div>';
-SK.settings=()=>{const st=settings();return `<p class="hint">Path advisor and Personal brand use AI through a small proxy you deploy, a Cloudflare Worker. It holds the API key so this page never does. Paste your Worker's URL and the shared token below, then test the connection. These two values stay on this device and are not included in your Tailor backup.</p>
- <div class="grid" style="margin-top:10px">${F('lg-set-url','Worker URL',inp('lg-set-url','https://your-worker.your-name.workers.dev','','value="'+E(st.workerUrl)+'" autocomplete="off"'),1)}${F('lg-set-token','Shared token',inp('lg-set-token','The LEDGER_TOKEN set on the Worker','password','value="'+E(st.token)+'" autocomplete="off"'),1)}</div>
+SK.settings=()=>{const st=settings(),oll=st.provider==='ollama',chipS='border:0;cursor:pointer;font:inherit;font-size:13px';return `<p class="hint">AI features (Path advisor, Personal brand, and the answer builder's feedback and drafts) can use a Cloudflare Worker that holds your API key, or Ollama running on your own computer. These values stay on this device and are not included in your Tailor backup. They are also separate for each browser and each installed app, so enter them again if you install Tailor as an app.</p>
+ <div class="grid" style="margin-top:10px">${F('lg-set-prov','AI provider','<select id="lg-set-prov"><option value="worker"'+(oll?'':' selected')+'>Cloudflare Worker (Claude)</option><option value="ollama"'+(oll?' selected':'')+'>Ollama (runs on this computer)</option></select>',1)}</div>
+ <div id="lg-grp-worker"${oll?' hidden':''}><div class="grid" style="margin-top:10px">${F('lg-set-url','Worker URL',inp('lg-set-url','https://your-worker.your-name.workers.dev','','value="'+E(st.workerUrl)+'" autocomplete="off"'),1)}${F('lg-set-token','Shared token',inp('lg-set-token','The LEDGER_TOKEN set on the Worker','password','value="'+E(st.token)+'" autocomplete="off"'),1)}</div></div>
+ <div id="lg-grp-ollama"${oll?'':' hidden'}><p class="hint">Nothing leaves your computer. Install Ollama, pull a model, and open Tailor from http://localhost (see the README) so the browser allows the connection.</p><div class="grid">${F('lg-set-ourl','Ollama address',inp('lg-set-ourl','http://localhost:11434','','value="'+E(st.ollamaUrl)+'" autocomplete="off"'),1)}${F('lg-set-omodel','Model',inp('lg-set-omodel','Press Find installed models','','value="'+E(st.ollamaModel)+'" autocomplete="off"'),1)}</div><div class="row"><button class="btn" data-lg="ollama-models">Find installed models</button></div><div id="lg-models"></div></div>
  <div class="row"><button class="btn" data-lg="test-conn">Test connection</button><button class="btn pri" data-lg="save-set">Save settings</button></div><div id="lg-test"></div>
  <h2>Bring in an old Career Ledger backup</h2><p class="hint">Restores a backup file from the standalone Career Ledger. Pipeline entries are added to your Applications. Your Tailor backup (Your details tab) already includes everything in this tab.</p>
  <div class="row"><button class="btn" data-lg="imp-led">Choose a Ledger backup (.json)</button><input type="file" id="lg-impfile" accept="application/json,.json" hidden></div>`};
@@ -991,14 +994,24 @@ FILL.brand=()=>{const r=(L().branding||{}).result,box=$('#lg-brand-res');
 FILL.comp=()=>{const it=[...L().comp].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
  const fa=(a,c)=>{try{return new Intl.NumberFormat(undefined,{style:'currency',currency:c||'GBP',maximumFractionDigits:0}).format(a)}catch(e){return(c||'')+' '+Number(a).toLocaleString()}};
  $('#lg-comp-list').innerHTML=it.length?it.map((c,i)=>`<div class="lg-item"><div class="lg-body"><div class="lg-top"><span class="lg-amt">${E(fa(c.amount,c.currency))}</span><span class="lg-badge acc">${E(c.type)}</span>${i===0?'<span class="lg-badge ok">Most recent</span>':''}</div>${c.company?`<div class="lg-meta">${E(c.company)}</div>`:''}${c.notes?`<div class="lg-notes">${E(c.notes)}</div>`:''}<div class="lg-meta">${fmtDate(c.date)}</div></div><div class="lg-act"><button class="btn dng" data-lg="del" data-lgk="comp" data-lgid="${c.id}">Delete</button></div></div>`).join(''):empty('No compensation history yet','Log your current base, or the last offer or raise you got, to start the record.')};
-FILL.settings=()=>{};FILL.pipeline=()=>{};
+FILL.settings=()=>{const p=document.getElementById('lg-set-prov');if(p)p.onchange=()=>{const o=p.value==='ollama';document.getElementById('lg-grp-worker').hidden=o;document.getElementById('lg-grp-ollama').hidden=!o}};FILL.pipeline=()=>{};
 function show(v){view=v;nav();$('#lgbody').innerHTML=SK[v]?SK[v]():'';(FILL[v]||(()=>{}))()}
 function refresh(){nav();(FILL[view]||(()=>{}))()}
 /* ---- AI via your Worker ---- */
-async function ask(prompt,max,ms){const st=settings();ms=ms||45000;if(!st.workerUrl)throw new Error('No Worker URL set. Open Settings in this tab and paste your Cloudflare Worker URL first.');
+async function askOllama(st,prompt,max,ms){
+ if(!st.ollamaModel)throw new Error('No Ollama model chosen. Open Settings, press Find installed models, pick one and save.');
+ const base=(st.ollamaUrl||'http://localhost:11434').replace(/\/$/,''),c=new AbortController(),t=setTimeout(()=>c.abort(),Math.max(ms||0,180000));let r,txt;
+ try{r=await fetch(base+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:st.ollamaModel,stream:false,messages:[{role:'user',content:prompt}],options:{num_predict:max||1500}}),signal:c.signal});txt=await r.text()}
+  catch(e){if(e.name==='AbortError')throw new Error('Ollama took too long. The first request loads the model, so try again, or choose a smaller model.');throw new Error('Could not reach Ollama at '+base+'. Check that Ollama is open. If this page is on https (for example GitHub Pages), your browser may block calls to http://localhost, so run Tailor from http://localhost instead (see the README). If it is already on localhost, set OLLAMA_ORIGINS to this page\'s address and restart Ollama.')}
+  finally{clearTimeout(t)}
+ let d;try{d=JSON.parse(txt)}catch(e){throw new Error('Ollama returned an unexpected response (status '+r.status+'): '+txt.slice(0,150))}
+ if(!r.ok||d.error)throw new Error('Ollama: '+(typeof d.error==='string'?d.error:'request failed with status '+r.status));
+ const out=((d.message||{}).content||'').trim();if(!out)throw new Error('Ollama returned an empty response. Try again.');return out}
+async function ollamaModels(base){const r=await fetch(base.replace(/\/$/,'')+'/api/tags'),d=await r.json();return(d.models||[]).map(m=>m.name)}
+async function ask(prompt,max,ms){const st=settings();if(st.provider==='ollama')return askOllama(st,prompt,max,ms);ms=ms||45000;if(!st.workerUrl)throw new Error('No Worker URL set. Open Settings in this tab and paste your Cloudflare Worker URL first.');
  const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);let r,txt;
  try{r=await fetch(st.workerUrl,{method:'POST',headers:{'Content-Type':'application/json','X-Ledger-Token':st.token||''},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:max||1500,messages:[{role:'user',content:prompt}]}),signal:c.signal});txt=await r.text()}
- catch(e){if(e.name==='AbortError')throw new Error('Timed out after '+Math.round(ms/1000)+'s waiting for a response.');throw new Error('Could not reach your Worker. Check the URL, that it allows requests from this site, and that you are online.')}
+ catch(e){if(e.name==='AbortError')throw new Error('Timed out after '+Math.round(ms/1000)+'s waiting for a response.');throw new Error('Could not reach your Worker. Check the URL, that it allows requests from this site, and that you are online. If you installed Tailor as an app, its settings are separate from the browser tab, so enter the Worker URL and token again in Career > Settings.')}
  finally{clearTimeout(t)}
  let d;try{d=JSON.parse(txt)}catch(e){throw new Error('Worker returned a non-JSON response (status '+r.status+'): '+txt.slice(0,150))}
  if(!r.ok||d.error)throw new Error(d.error&&d.error.message?d.error.message:typeof d.error==='string'?d.error:'Request failed with status '+r.status);
@@ -1022,6 +1035,7 @@ async function genBrand(){const l=L(),au=val('lg-br-audience').trim(),fo=val('lg
  const prompt=`You are a candid personal-branding advisor helping someone position themselves professionally (LinkedIn, resume, elevator pitch).\n\nWho they want to reach: ${au||'not specified'}\nWhat they want to be known for: ${fo||'not specified'}\nKey strengths/themes: ${st||'not specified — infer reasonable ones from context, or note that more input would help'}\nRecent accomplishments:\n- ${rw||'none provided'}\nCareer direction they're working toward: ${dir||'not specified'}\nTone: ${tone}\n\nRespond with ONLY a JSON object, no markdown fences, no preamble, in exactly this shape:\n{\n  "headline_options": ["headline option 1 (under 12 words, LinkedIn-style)", "headline option 2", "headline option 3"],\n  "elevator_pitch": "a natural-sounding 30-45 second spoken pitch, 3-4 sentences, first person",\n  "linkedin_about": "a 3-5 sentence draft for a LinkedIn About section, first person",\n  "talking_points": ["a specific, evidence-backed strength to lead with in interviews or networking", "another one", "another one"]\n}\nBe specific and grounded in what was actually provided — avoid generic corporate language and buzzwords like "results-driven" or "team player" unless genuinely earned by the context given.`;
  try{const r=xjson(await ask(prompt,1500));l.branding={inputs:{audience:au,focus:fo,strengths:st,tone},result:r,generatedAt:new Date().toISOString()};save();FILL.brand()}
  catch(e){box.innerHTML=errBox("Couldn't draft your brand",e.message||String(e),'gen-brand')}finally{btn.disabled=false}}
+function saveSet(){try{localStorage.setItem('ledger-settings',JSON.stringify({provider:val('lg-set-prov')==='ollama'?'ollama':'worker',workerUrl:val('lg-set-url').trim().replace(/\/$/,''),token:val('lg-set-token').trim(),ollamaUrl:val('lg-set-ourl').trim().replace(/\/$/,'')||'http://localhost:11434',ollamaModel:val('lg-set-omodel').trim()}));return true}catch(e){say('Could not save settings on this device.');return false}}
 async function testConn(){const box=$('#lg-test');box.innerHTML=spin('Testing connection...');const t0=Date.now();
  try{const r=await ask('Reply with exactly the word: OK',20,20000);box.innerHTML=`<div class="lg-ok"><b>Connection working.</b> Response in ${Date.now()-t0}ms: "${E(r.trim().slice(0,50))}"</div>`}
  catch(e){box.innerHTML=errBox('Connection test failed',e.message||String(e))}}
@@ -1066,8 +1080,10 @@ const A={
  'use-title'(id){const h=((L().branding||{}).result||{}).headline_options||[],v=h[+id];if(!v)return;if(S.p.title&&S.p.title!==v&&!confirm('Replace your CV title "'+S.p.title+'" with this headline?'))return;S.p.title=v;save();forms();say('Set as your CV title. Change it in Your details.')},
  'use-about'(){const v=((L().branding||{}).result||{}).linkedin_about;if(!v)return;if(S.p.summary&&!confirm('Replace your current CV summary with this text?'))return;S.p.summary=v;save();forms();say('Set as your CV summary. Edit it in Your details so it fits each role.')},
  'save-comp'(){const a=parseFloat(val('lg-cp-amount'));if(isNaN(a)){say('Enter an amount first.');return}L().comp.unshift({id:uid(),type:val('lg-cp-type'),date:val('lg-cp-date')||today(),amount:a,currency:val('lg-cp-currency').trim().toUpperCase()||'GBP',company:val('lg-cp-company').trim(),notes:val('lg-cp-notes').trim()});['lg-cp-amount','lg-cp-company','lg-cp-notes','lg-cp-date'].forEach(i=>setv(i,''));A.toggle('comp');save();refresh();say('Entry saved.')},
- 'save-set'(){try{localStorage.setItem('ledger-settings',JSON.stringify({workerUrl:val('lg-set-url').trim().replace(/\/$/,''),token:val('lg-set-token').trim()}));$('#lg-test').innerHTML='<div class="lg-ok"><b>Saved.</b> Now try Test connection.</div>'}catch(e){say('Could not save settings on this device.')}},
- 'test-conn'(){testConn()},
+ 'save-set'(){if(saveSet())$('#lg-test').innerHTML='<div class="lg-ok"><b>Saved.</b> Now try Test connection.</div>'},
+ 'test-conn'(){if(saveSet())testConn()},
+ 'ollama-models'(){const box=$('#lg-models');box.innerHTML=spin('Looking for models...');ollamaModels(val('lg-set-ourl').trim()||'http://localhost:11434').then(n=>{box.innerHTML=n.length?'<p class="hint">Tap a model to use it, then save.</p>'+n.map(m=>`<button class="chip" data-lg="pick-model" data-lgid="${E(m)}" style="border:0;cursor:pointer;font:inherit;font-size:13px">${E(m)}</button>`).join(''):errBox('No models installed','Run ollama pull followed by a model name in Terminal, then try again.')}).catch(()=>{box.innerHTML=errBox("Couldn't reach Ollama",'Check that Ollama is open and the address is right. If Tailor is on https, your browser may block this. Run Tailor from http://localhost instead (see the README).')})},
+ 'pick-model'(id){setv('lg-set-omodel',id)},
  'imp-led'(){$('#lg-impfile').click()}
 };
 function addSk(names){const cur=skills(),low=new Set(cur.map(x=>x.toLowerCase())),add=[...new Set(names.filter(n=>n&&!low.has(n.toLowerCase())))];if(!add.length)return 0;S.p.skills=cur.concat(add).join(', ');save();forms();return add.length}
@@ -1078,7 +1094,7 @@ document.addEventListener('change',e=>{const t=e.target;
  if(t.dataset&&t.dataset.lgp){const l=L();if(!l.presence)l.presence={};const p=l.presence[t.dataset.lgp]=l.presence[t.dataset.lgp]||{};p[t.dataset.lgfield]=t.type==='checkbox'?t.checked:t.value;save()}
  if(t.id==='lg-impfile'){const f=t.files[0];if(f)f.text().then(importLedger);t.value=''}});
 window.careerOpen=function(){const n=migrate(),l=L();if(!$('#lgbody').innerHTML)show(view);else refresh();say(n?'Brought in '+n+' item'+(n>1?'s':'')+' from the Career Ledger already saved on this device.':'')};
-window.tlAI={ask,settings,spin,errBox};
+window.tlAI={ask,settings,spin,errBox,ready:aiReady};
 })();
 forms();bkStatus();
 </script>
